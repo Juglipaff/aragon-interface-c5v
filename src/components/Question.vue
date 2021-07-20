@@ -103,23 +103,25 @@ export default {
     updateList: function () {
       if (!this.expired && !this.question.executed) {
         this.getBarValues()
-        this.votingContract.getVoterState(this.question.id, this.currentAccount)
-          .then(res => {
-            if (res === 0) {
-              this.votedNo = false
-              this.votedYes = false
-            } else if (res === 1) {
-              this.votedNo = false
-              this.votedYes = true
-            } else if (res === 2) {
-              this.votedNo = true
-              this.votedYes = false
-            }
-          })
-        this.votingContract.canVote(this.question.id, this.currentAccount)
-          .then(res => {
-            this.canVote = res
-          })
+        if (this.currentAccount) {
+          this.votingContract.getVoterState(this.question.id, this.currentAccount)
+            .then(res => {
+              if (res === 0) {
+                this.votedNo = false
+                this.votedYes = false
+              } else if (res === 1) {
+                this.votedNo = false
+                this.votedYes = true
+              } else if (res === 2) {
+                this.votedNo = true
+                this.votedYes = false
+              }
+            })
+          this.votingContract.canVote(this.question.id, this.currentAccount)
+            .then(res => {
+              this.canVote = res
+            })
+        }
       }
     }
   },
@@ -135,23 +137,25 @@ export default {
     this.toHHMMSS(this.question.startDate - Math.floor(Date.now() / 1000) + 86400)
     this.startingExpireValue = this.expire
     this.intervalId = setInterval(() => { this.toHHMMSS(this.question.startDate - Math.floor(Date.now() / 1000) + 86400) }, 1000)
-    this.votingContract.getVoterState(this.question.id, this.currentAccount)
-      .then(res => {
-        if (res === 0) {
-          this.votedNo = false
-          this.votedYes = false
-        } else if (res === 1) {
-          this.votedNo = false
-          this.votedYes = true
-        } else if (res === 2) {
-          this.votedNo = true
-          this.votedYes = false
-        }
-      })
-    this.votingContract.canVote(this.question.id, this.currentAccount)
-      .then(res => {
-        this.canVote = res
-      })
+    if (this.currentAccount) {
+      this.votingContract.getVoterState(this.question.id, this.currentAccount)
+        .then(res => {
+          if (res === 0) {
+            this.votedNo = false
+            this.votedYes = false
+          } else if (res === 1) {
+            this.votedNo = false
+            this.votedYes = true
+          } else if (res === 2) {
+            this.votedNo = true
+            this.votedYes = false
+          }
+        })
+      this.votingContract.canVote(this.question.id, this.currentAccount)
+        .then(res => {
+          this.canVote = res
+        })
+    }
   },
   methods: {
     async getMessage () {
