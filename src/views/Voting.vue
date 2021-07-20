@@ -144,10 +144,10 @@ export default {
       chainId: 304,
       currentAccount: [],
 
-      votingAddress: '0x0c9690c6b59306c3d9db64c32c5164595a83b1b2',
-      tokensAddress: '0x59f318156fc74ab34ac78abd9d20995901448551',
-      tokenAddress: '0x299d365eea85acf7bf9f6e30459e8efe1f62ad45',
-      ACLAddress: '0x9fde60d0a3da6ca21a03d6984f6ba7ad8fff6c37',
+      votingAddress: '0x4d4582eebed5f3e561f55b1ca1675e7e942012fe',
+      tokensAddress: '0x6ae376b6a513d5ede7e6963ec8da7d2f6ff2b4f9',
+      tokenAddress: '0x51bbeb306328b3195fdeef9a26bae76a17b040b5',
+      ACLAddress: '0xf3cb975fe73a6b39b592878535e594e6d5552cbe',
 
       provider: null,
       voting: null,
@@ -307,10 +307,12 @@ export default {
 
     async update () {
       try {
-        /* this.holders = await this.tokens.holders()
+        this.holders = await this.tokenContract.getTokenHolders()
+        console.log(this.holders)
         this.holders = this.holders.filter((a) => {
-          return parseInt(a.balance) > 0
-        }) */
+          return a !== '0x0000000000000000000000000000000000000000'
+        })
+        console.log(this.holders)
 
         if (this.currentAccount[0]) {
           this.hasPermission = (await this.tokenContract.balanceOf(this.currentAccount[0])) > 0

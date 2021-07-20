@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="holderAddress">{{cutAddress(holder.address)}}</div>
-        <button class="holderButton" :disabled="!hasPermission||currentAccount.length===0||!isRightChain||loading" v-on:click="burn(holder.address)">
+        <div class="holderAddress">{{cutAddress(holder)}}</div>
+        <button class="holderButton" :disabled="!hasPermission||currentAccount.length===0||!isRightChain||loading" v-on:click="burn(holder)">
             <span v-if="!loading">Remove</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </button>
@@ -15,7 +15,7 @@ export default {
   props: {
     provider: Object,
     tokenAddress: String,
-    holder: Object,
+    holder: String,
     currentAccount: Array,
     hasPermission: Boolean,
     isRightChain: Boolean
