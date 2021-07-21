@@ -182,7 +182,10 @@ export default {
   },
   computed: {
     isManager () {
-      return this.manager === ethers.utils.getAddress(this.currentAccount[0])
+      if (this.currentAccount[0]) {
+        return this.manager === ethers.utils.getAddress(this.currentAccount[0])
+      }
+      return false
     }
   },
   async created () {
