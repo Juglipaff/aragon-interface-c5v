@@ -6,13 +6,14 @@
             <div v-if="!rightChainId" class="wrongNet">Wrong Network!</div>
             <button v-else-if="currentAccount.length===0" class="connectWallet" v-on:click="connectWallet">Connect wallet</button>
             <div v-else class="wallet">{{currentAccount[0]}}</div>
-            <div v-if="isAdmin" class="isAdmin">Admin</div>
-            <div v-else-if="hasPermission" class="isAdmin">Member</div>
-            <div v-else class="isAdmin">Guest</div>
+            <div v-if="isManager" class="role">{{isAdmin? 'Admin':'Member'}} Manager</div>
+            <div v-else-if="isAdmin" class="role">Admin</div>
+            <div v-else-if="hasPermission" class="role">Member</div>
+            <div v-else class="role">Guest</div>
             </div>
         <div class="padding"></div>
-        <div class="createVote">Create new vote</div>
-          <div class="top-row">
+        <div v-if="hasPermission" class="createVote">Create new vote</div>
+          <div v-if="hasPermission" class="top-row">
             <div class="questionInput">
               <div class="question-title">Question</div>
               <input class="inputQuestion" v-model="question">
@@ -53,16 +54,18 @@
               />
             </div>
 
-          <div  v-if="isAdmin" class="createVote">Token Holders</div>
-            <div v-if="isAdmin" class="tokenHolders">
+          <div  v-if="isAdmin||isManager" class="createVote">Token Holders</div>
+            <div v-if="isAdmin||isManager" class="tokenHolders">
               <div class="holderHeader">Holder</div>
               <HOLDER
               v-for="holder in holders"
               :key="holder.address"
-              class="holder"
               @update="update"
+              :isManager="isManager"
+              :isAdmin="isAdmin"
+              :ACLContract="ACLContract"
               :provider="provider"
-              :tokenAddress="tokensAddress"
+              :tokensContract="tokensContract"
               :holder="holder"
               :currentAccount="currentAccount"
               :hasPermission="hasPermission"
@@ -77,8 +80,8 @@
               </div>
             </div>
 
-            <div class="createVote">Vote Settings</div>
-            <div class="tokenHolders">
+            <div v-if="hasPermission" class="createVote">Vote Settings</div>
+            <div v-if="hasPermission" class="tokenHolders">
               <div class="holderHeader">Setting<div class="settingValueHeader">Value, %</div></div>
               <div class="holder">
                 <div class="requirements">Minimum support</div>
@@ -144,10 +147,10 @@ export default {
       chainId: 304,
       currentAccount: [],
 
-      votingAddress: '0x4d4582eebed5f3e561f55b1ca1675e7e942012fe',
-      tokensAddress: '0x6ae376b6a513d5ede7e6963ec8da7d2f6ff2b4f9',
-      tokenAddress: '0x51bbeb306328b3195fdeef9a26bae76a17b040b5',
-      ACLAddress: '0xf3cb975fe73a6b39b592878535e594e6d5552cbe',
+      votingAddress: '0x46f6b605222266c55f83789c964b6713e00ce014',
+      tokensAddress: '0x5d3471c59eb37f1e0e80c24d75295e27b4c29ac9',
+      tokenAddress: '0xb88e8594894cf8f43da023414d1e8de06220ca0e',
+      ACLAddress: '0x23d0f5e22069287a86efaaf5cb88c078424b8678',
 
       provider: null,
       voting: null,
@@ -169,8 +172,17 @@ export default {
       minAcceptQuorum: 0,
       supportRequiredPct: 0,
       votingContract: null,
+      tokensContract: null,
+      tokenContract: null,
+      ACLContract: null,
       rightChainId: false,
-      isAdmin: false
+      isAdmin: false,
+      manager: false
+    }
+  },
+  computed: {
+    isManager () {
+      return this.manager === ethers.utils.getAddress(this.currentAccount[0])
     }
   },
   async created () {
@@ -307,16 +319,36 @@ export default {
 
     async update () {
       try {
-        this.holders = await this.tokenContract.getTokenHolders()
-        console.log(this.holders)
-        this.holders = this.holders.filter((a) => {
-          return a !== '0x0000000000000000000000000000000000000000'
+        this.manager = await this.ACLContract.getPermissionManager(this.tokensAddress, '0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775')
+        const tokenHolders = await this.tokenContract.getTokenHolders()
+        const adminList = await this.ACLContract.getAdmins()
+        this.holders = tokenHolders.map((item) => ({
+          address: item,
+          isAdmin: adminList.includes(item),
+          isManager: item.toLowerCase() === this.manager.toLowerCase()
+        }))
+        this.holders = this.holders.sort((a, b) => {
+          if (a.isManager) {
+            return -1
+          }
+          if (a.isAdmin && !b.isAdmin) {
+            return -1
+          }
+          if (a.isAdmin && b.isAdmin) {
+            return 0
+          }
+          if (!a.isAdmin && b.isAdmin) {
+            return 1
+          }
+          if (!a.isAdmin && !b.isAdmin) {
+            return 0
+          }
+          return 1
         })
-        console.log(this.holders)
 
         if (this.currentAccount[0]) {
-          this.hasPermission = (await this.tokenContract.balanceOf(this.currentAccount[0])) > 0
-          this.isAdmin = await this.ACLContract.hasPermission(this.currentAccount[0], this.tokensAddress, '0x154c00819833dac601ee5ddded6fda79d9d8b506b911b3dbd54cdb95fe6c3686')// has permission to mint
+          this.hasPermission = tokenHolders.includes(ethers.utils.getAddress(this.currentAccount[0]))// (await this.tokenContract.balanceOf(this.currentAccount[0])) > 0
+          this.isAdmin = adminList.includes(ethers.utils.getAddress(this.currentAccount[0]))
         } else {
           this.hasPermission = false
           this.isAdmin = false
@@ -355,7 +387,13 @@ export default {
 }
 </script>
 <style scoped>
-.isAdmin{
+.holder{
+  padding-top:20px;
+  padding-left: 20px;
+  padding-bottom:20px;
+  border-bottom:1px solid rgb(228, 228, 228);
+}
+.role{
   background-color:rgb(255, 210, 88);
   height:40px;
   line-height: 40px;
@@ -484,12 +522,7 @@ export default {
   line-height:30px;
   border-radius: 5px;
 }
-.holder{
-  padding-top:20px;
-  padding-left: 20px;
-  padding-bottom:20px;
-  border-bottom:1px solid rgb(228, 228, 228);
-}
+
 .tokenHolders{
   -webkit-box-shadow: -1px 4px 10px -1px rgba(34, 60, 80, 0.05);
   -moz-box-shadow: -1px 4px 10px -1px rgba(34, 60, 80, 0.05);
