@@ -6,10 +6,12 @@
             <div v-if="!rightChainId" class="wrongNet">Wrong Network!</div>
             <button v-else-if="currentAccount.length===0" class="connectWallet" v-on:click="connectWallet">Connect wallet</button>
             <div v-else class="wallet">{{currentAccount[0]}}</div>
+            <div v-if="userName||userPosition" class="NamePosition">{{userName}}{{userPosition&&userName?' | ':''}}{{userPosition}}</div>
             <div v-if="isManager" class="role">{{isAdmin? 'Admin':'Member'}} Manager</div>
             <div v-else-if="isAdmin" class="role">Admin</div>
             <div v-else-if="hasPermission" class="role">Member</div>
             <div v-else class="role">Guest</div>
+
             </div>
         <div class="padding"></div>
         <div v-if="hasPermission" class="createVote">Create new vote</div>
@@ -147,10 +149,10 @@ export default {
       chainId: 304,
       currentAccount: [],
 
-      votingAddress: '0x46f6b605222266c55f83789c964b6713e00ce014',
-      tokensAddress: '0x5d3471c59eb37f1e0e80c24d75295e27b4c29ac9',
-      tokenAddress: '0xb88e8594894cf8f43da023414d1e8de06220ca0e',
-      ACLAddress: '0x23d0f5e22069287a86efaaf5cb88c078424b8678',
+      votingAddress: '0xb88797d333af0bd6cd97c2eb6fae562fe1135b25',
+      tokensAddress: '0x02fc711a917320f6e598e41704827c94d7f5f83a',
+      tokenAddress: '0x8de36eda596c8b615435fccedade18408b798980',
+      ACLAddress: '0xb6a1025f9f95fb8090d91cd0c2742a73be903d6b',
 
       provider: null,
       voting: null,
@@ -177,7 +179,9 @@ export default {
       ACLContract: null,
       rightChainId: false,
       isAdmin: false,
-      manager: false
+      manager: false,
+      userName: null,
+      userPosition: null
     }
   },
   computed: {
@@ -326,9 +330,9 @@ export default {
         const tokenHolders = await this.tokenContract.getTokenHolders()
         const adminList = await this.ACLContract.getAdmins()
         this.holders = tokenHolders.map((item) => ({
-          address: item,
-          isAdmin: adminList.includes(item),
-          isManager: item.toLowerCase() === this.manager.toLowerCase()
+          ...item,
+          isAdmin: adminList.includes(item.holder),
+          isManager: item.holder.toLowerCase() === this.manager.toLowerCase()
         }))
         this.holders = this.holders.sort((a, b) => {
           if (a.isManager) {
@@ -350,11 +354,20 @@ export default {
         })
 
         if (this.currentAccount[0]) {
-          this.hasPermission = tokenHolders.includes(ethers.utils.getAddress(this.currentAccount[0]))// (await this.tokenContract.balanceOf(this.currentAccount[0])) > 0
+          var accountInfo = tokenHolders.find((a) => { return a.holder.toLowerCase() === this.currentAccount[0].toLowerCase() })
+          this.hasPermission = !!accountInfo
           this.isAdmin = adminList.includes(ethers.utils.getAddress(this.currentAccount[0]))
         } else {
           this.hasPermission = false
           this.isAdmin = false
+        }
+
+        if (this.hasPermission) {
+          this.userName = accountInfo.name
+          this.userPosition = accountInfo.position
+        } else {
+          this.userName = null
+          this.userPosition = null
         }
 
         this.token.totalSupply = await this.tokenContract.totalSupply()
@@ -396,8 +409,24 @@ export default {
   padding-bottom:20px;
   border-bottom:1px solid rgb(228, 228, 228);
 }
+.NamePosition{
+  background-color:rgb(0, 212, 131);
+height:40px;
+  line-height: 40px;
+  padding-left:15px;
+  padding-right:15px;
+  vertical-align: middle;
+  margin-top:20px;
+  margin-right:20px;
+  outline:none;
+  font-size:18px;
+  border:none;
+  border-radius:5px;
+  color:white;
+  float:right;
+}
 .role{
-  background-color:rgb(255, 210, 88);
+  background-color:rgb(255, 202, 88);
   height:40px;
   line-height: 40px;
   padding-left:15px;
@@ -405,8 +434,6 @@ export default {
   vertical-align: middle;
   margin-top:20px;
   margin-right:20px;
-  overflow: hidden;
-  text-overflow: ellipsis;
   outline:none;
   font-size:18px;
   border:none;
