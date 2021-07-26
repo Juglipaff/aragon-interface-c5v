@@ -3,7 +3,7 @@
       <div class="title"><span class="id">#{{this.question.id}}: </span>{{questionTitle}}</div>
       <div class="progress">
         Yes: {{question.yea}} <span v-if="!question.executed&&!expired" class="buttons">
-        <button class="yes" v-on:click="vote(true)" :disabled="!canVote||!hasPermission || votedYes || !currentAccount || loading||!isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
+        <button class="yes" v-if="hasPermission" v-on:click="vote(true)" :disabled="!canVote || votedYes || !currentAccount || loading||!isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
       </span><br>
         <progress-bar
           :options="yesOptions"
@@ -12,7 +12,7 @@
       </div>
       <div class="progress">
         No: {{question.nay}} <span v-if="!question.executed&&!expired" class="buttons">
-        <button class="no" v-on:click="vote(false)" :disabled="!canVote||!hasPermission || votedNo || !currentAccount || loading||!isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
+        <button class="no" v-if="hasPermission" v-on:click="vote(false)" :disabled="!canVote || votedNo || !currentAccount || loading||!isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
       </span><br>
         <progress-bar
           :options="noOptions"
@@ -173,7 +173,7 @@ export default {
         } else if (method === '000000245eb24332') {
           methodName = 'Change minimum acceptance quorum to'
         }
-        const amount = parseInt(ethers.utils.formatEther('0x' + this.question.script.substring(this.question.script.length - 64, this.question.script.length)) * 100)
+        const amount = parseFloat((ethers.utils.formatEther('0x' + this.question.script.substring(this.question.script.length - 64, this.question.script.length)) * 100).toFixed(3))
         this.questionTitle = `${methodName} ${amount}%`
         return
       }
@@ -187,7 +187,14 @@ export default {
     async vote (supports) {
       this.loading = true
       try {
-        const tx = await this.votingContract.connect(this.provider.getSigner()).vote(this.question.id, supports, true)
+        const tx = await this.votingContract.connect(this.provider.getSigner()).vote(
+          this.question.id,
+          supports,
+          true,
+          {
+            gasPrice: '0'
+          }
+        )
         await tx.wait()
       } catch (err) {
         console.log(err)

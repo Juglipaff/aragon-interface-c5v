@@ -2,25 +2,50 @@
   <div class="home">
     <transition name="fade">
        <div key="1" v-if="pageLoading===false" class="container">
+
+         <div class="voteSettings" v-if="showSettingsModal">
+           <div class="voteSettingsBG" v-on:click="showSettings"></div>
+            <div class="settingsContainer">
+              <div class="settingsHolder">
+                <div class="requirements">Minimum Support</div>
+                  <button v-on:click="changeSupport(supportRequiredPct)" class="holderButton" :disabled="!hasPermission||currentAccount.length===0||loadingSupport||!rightChainId">
+                    <span v-if="!loadingSupport">Propose Change</span>
+                    <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                  </button>
+                <input type="number" class="settingValue" v-model="supportRequiredPct">
+              </div>
+              <div class="settingsHolder">
+                <div class="requirements">Minimum Approval</div>
+                  <button v-on:click="changeMinQuorum(minAcceptQuorum)" class="holderButton" :disabled="!hasPermission||currentAccount.length===0||loadingQuorum||!rightChainId">
+                    <span v-if="!loadingQuorum">Propose Change</span>
+                    <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                  </button>
+                <input type="number" class="settingValue" v-model="minAcceptQuorum">
+              </div>
+            </div>
+         </div>
+
         <div class="header">
-            <div v-if="!rightChainId" class="wrongNet">Wrong Network!</div>
+            <font-awesome-icon class="cog" v-if="hasPermission" v-on:click="showSettings" :icon="['fas', 'cog']" />
+            <div v-if="!rightChainId" class="wrongNet" v-on:click="switchNetwork">Wrong Network!</div>
             <button v-else-if="currentAccount.length===0" class="connectWallet" v-on:click="connectWallet">Connect wallet</button>
             <div v-else class="wallet">{{currentAccount[0]}}</div>
             <div v-if="userName||userPosition" class="NamePosition">{{userName}}{{userPosition&&userName?' | ':''}}{{userPosition}}</div>
-            <div v-if="isManager" class="role">{{isAdmin? 'Admin':'Member'}} Manager</div>
+
+            <div v-if="isManager" class="role">{{hasPermission? 'Admin':''}} Manager</div>
             <div v-else-if="isAdmin" class="role">Admin</div>
             <div v-else-if="hasPermission" class="role">Member</div>
             <div v-else class="role">Guest</div>
 
-            </div>
+        </div>
         <div class="padding"></div>
-        <div v-if="hasPermission" class="createVote">Create new vote</div>
+        <div v-if="hasPermission" class="createVote">Create Proposal</div>
           <div v-if="hasPermission" class="top-row">
             <div class="questionInput">
               <div class="question-title">Question</div>
               <input class="inputQuestion" v-model="question">
               <button class="submit" :disabled="!hasPermission||question===''||currentAccount.length===0 ||loadingCreate||!rightChainId" v-on:click="createVote(question)">
-                <span v-if="!loadingCreate">Create Vote</span>
+                <span v-if="!loadingCreate">Create Proposal</span>
                 <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
               </button>
             </div>
@@ -38,7 +63,7 @@
               </div>
             </div>
           </div>
-          <div class="createVote">Open votes - {{openVotes.length}}</div>
+          <div class="createVote">Open Proposals - {{openVotes.length}}</div>
           <div class="wrapper">
             <QUESTION
               v-for="entry in openVotes"
@@ -56,8 +81,8 @@
               />
             </div>
 
-          <div  v-if="isAdmin||isManager" class="createVote">Token Holders</div>
-            <div v-if="isAdmin||isManager" class="tokenHolders">
+          <div  v-if="isAdmin" class="createVote">Token Holders</div>
+            <div v-if="isAdmin" class="tokenHolders">
               <div class="holderHeader">Holder</div>
               <HOLDER
               v-for="holder in holders"
@@ -73,37 +98,21 @@
               :hasPermission="hasPermission"
               :isRightChain="rightChainId"
               />
-              <div class="holder">
+              <div class="holder" v-if="isAdmin">
                 <input class="inputHolder" placeholder="Address" v-model="newAddress">
                 <button class="submitHolder" :disabled="!hasPermission||newAddress===''||currentAccount.length===0||loadingMint||!rightChainId" v-on:click="mint(newAddress)">
-                  <span v-if="!loadingMint">Add new token</span>
+                  <span v-if="!loadingMint">Add Participant</span>
                   <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 </button>
               </div>
             </div>
 
-            <div v-if="hasPermission" class="createVote">Vote Settings</div>
+            <!-- <div v-if="hasPermission" class="createVote">Vote Settings</div> -->
             <div v-if="hasPermission" class="tokenHolders">
-              <div class="holderHeader">Setting<div class="settingValueHeader">Value, %</div></div>
-              <div class="holder">
-                <div class="requirements">Minimum support</div>
-                  <button v-on:click="changeSupport(supportRequiredPct)" class="holderButton" :disabled="!hasPermission||currentAccount.length===0||loadingSupport||!rightChainId">
-                    <span v-if="!loadingSupport">Change</span>
-                    <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-                  </button>
-                <input type="number" class="settingValue" v-model="supportRequiredPct">
-              </div>
-              <div class="holder">
-                <div class="requirements">Minimum approval</div>
-                  <button v-on:click="changeMinQuorum(minAcceptQuorum)" class="holderButton" :disabled="!hasPermission||currentAccount.length===0||loadingQuorum||!rightChainId">
-                    <span v-if="!loadingQuorum">Change</span>
-                    <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-                  </button>
-                <input type="number" class="settingValue" v-model="minAcceptQuorum">
-              </div>
+
             </div>
 
-          <div class="createVote">Closed votes - {{closedVotes.length}}</div>
+          <div class="createVote">Closed Proposals - {{closedVotes.length}}</div>
             <div class="wrapper">
               <QUESTION
                 v-for="entry in closedVotes"
@@ -148,6 +157,7 @@ export default {
     return {
       chainId: 304,
       currentAccount: [],
+      rpcUrl: 'https://rpc.c5v.network/',
 
       votingAddress: '0xb88797d333af0bd6cd97c2eb6fae562fe1135b25',
       tokensAddress: '0x02fc711a917320f6e598e41704827c94d7f5f83a',
@@ -181,7 +191,8 @@ export default {
       isAdmin: false,
       manager: false,
       userName: null,
-      userPosition: null
+      userPosition: null,
+      showSettingsModal: false
     }
   },
   computed: {
@@ -211,14 +222,14 @@ export default {
       this.rightChainId = providerChainId === this.chainId
 
       if (!this.rightChainId) {
-        this.provider = new ethers.providers.JsonRpcProvider('https://rpc.c5v.network')
+        this.provider = new ethers.providers.JsonRpcProvider(this.rpcUrl)
       }
       var address = window.ethereum.selectedAddress
       if (address !== null) {
         this.currentAccount = [address]
       }
     } else {
-      this.provider = new ethers.providers.JsonRpcProvider('https://rpc.c5v.network')
+      this.provider = new ethers.providers.JsonRpcProvider(this.rpcUrl)
     }
     this.votingContract = new ethers.Contract(this.votingAddress, votingABI, this.provider)
     this.tokensContract = new ethers.Contract(this.tokensAddress, tokensABI, this.provider)
@@ -233,6 +244,30 @@ export default {
   },
 
   methods: {
+    showSettings () {
+      this.showSettingsModal = !this.showSettingsModal
+    },
+    switchNetwork () {
+      if (window.ethereum) {
+        window.ethereum.request({
+          method: 'wallet_addEthereumChain',
+          params: [
+            {
+              chainId: '0x' + this.chainId.toString(16),
+              chainName: 'C5V',
+              nativeCurrency: {
+                name: 'C5V',
+                symbol: 'C5V',
+                decimals: 18
+              },
+              rpcUrls: [this.rpcUrl],
+              blockExplorerUrls: ['https://stats.c5v.network/']
+            }
+          ]
+        })
+      }
+    },
+
     connectWallet () {
       if (window.ethereum) {
         window.ethereum.request({ method: 'eth_requestAccounts' })
@@ -247,7 +282,12 @@ export default {
           const iface = new ethers.utils.Interface(votingABI)
           const encodedData = iface.encodeFunctionData('newVote', ['0x00000001', question])
           const script = encodeCallScript([{ to: this.votingAddress, data: encodedData }])
-          const tx = await this.tokensContract.connect(this.provider.getSigner()).forward(script)
+          const tx = await this.tokensContract.connect(this.provider.getSigner()).forward(
+            script,
+            {
+              gasPrice: '0'
+            }
+          )
           await this.waitForTransaction(tx)
         }
       } catch (err) {
@@ -261,7 +301,13 @@ export default {
       try {
         if (ethers.utils.isAddress(to)) {
           this.loadingMint = true
-          const tx = await this.tokensContract.connect(this.provider.getSigner()).mint(to, 1)
+          const tx = await this.tokensContract.connect(this.provider.getSigner()).mint(
+            to,
+            1,
+            {
+              gasPrice: '0'
+            }
+          )
           await this.waitForTransaction(tx)
         }
       } catch (err) {
@@ -282,7 +328,12 @@ export default {
 
           const encodedDataForwardCall = iface.encodeFunctionData('forward', [script])
           const scriptForwardCall = encodeCallScript([{ to: this.votingAddress, data: encodedDataForwardCall }])
-          const tx = await this.tokensContract.connect(this.provider.getSigner()).forward(scriptForwardCall)
+          const tx = await this.tokensContract.connect(this.provider.getSigner()).forward(
+            scriptForwardCall,
+            {
+              gasPrice: '0'
+            }
+          )
           await this.waitForTransaction(tx)
         }
       } catch (err) {
@@ -303,7 +354,12 @@ export default {
 
           const encodedDataForwardCall = iface.encodeFunctionData('forward', [script])
           const scriptForwardCall = encodeCallScript([{ to: this.votingAddress, data: encodedDataForwardCall }])
-          const tx = await this.tokensContract.connect(this.provider.getSigner()).forward(scriptForwardCall)
+          const tx = await this.tokensContract.connect(this.provider.getSigner()).forward(
+            scriptForwardCall,
+            {
+              gasPrice: '0'
+            }
+          )
           await this.waitForTransaction(tx)
           // const intent = this.organisation.appIntent(this.voting.address, 'changeSupportRequiredPct', [value])
           // await this.waitForTransaction(intent)
@@ -329,11 +385,25 @@ export default {
         this.manager = await this.ACLContract.getPermissionManager(this.tokensAddress, '0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775')
         const tokenHolders = await this.tokenContract.getTokenHolders()
         const adminList = await this.ACLContract.getAdmins()
+        console.log(tokenHolders)
         this.holders = tokenHolders.map((item) => ({
           ...item,
           isAdmin: adminList.includes(item.holder),
-          isManager: item.holder.toLowerCase() === this.manager.toLowerCase()
+          isManager: item.holder.toLowerCase() === this.manager.toLowerCase(),
+          hasPermission: true
         }))
+
+        if (!this.holders.find((a) => a.holder === this.manager)) {
+          this.holders.push({
+            holder: this.manager,
+            name: '',
+            position: '',
+            isAdmin: adminList.includes(this.manager),
+            isManager: true,
+            hasPermission: false
+          })
+        }
+
         this.holders = this.holders.sort((a, b) => {
           if (a.isManager) {
             return -1
@@ -403,15 +473,60 @@ export default {
 }
 </script>
 <style scoped>
+.settingsHolder{
+  text-align: left;
+  padding-top:20px;
+  padding-left: 20px;
+  padding-bottom:20px;
+  border-bottom:1px solid rgb(228, 228, 228);
+}
+.settingsContainer{
+  z-index:1002;
+  position: absolute;
+  background-color:white;
+  right:25px;
+  top:75px;
+  width:420px;
+  border:1px solid rgb(228, 228, 228);
+  border-bottom:0px;
+  -webkit-box-shadow: -1px 4px 22px 0px rgba(34, 60, 80, 0.11);
+  -moz-box-shadow: -1px 4px 22px 0px rgba(34, 60, 80, 0.11);
+  box-shadow: -1px 4px 22px 0px rgba(34, 60, 80, 0.11);
+}
+.voteSettingsBG{
+  position: fixed;
+  width:100vw;
+  height:100vh;
+  z-index:1001;
+}
+.voteSettings{
+  width:100vw;
+  height:100vh;
+  position: fixed;
+  z-index:1001;
+}
+.cog{
+  transition:0.2s;
+  color:rgb(100, 100, 121);
+  cursor: pointer;
+  float:right;
+  font-size: 30px;
+  margin-top:25.5px;
+  margin-right:20px;
+}
+.cog:hover{
+  transform: rotateZ(60deg);
+}
 .holder{
   padding-top:20px;
   padding-left: 20px;
   padding-bottom:20px;
   border-bottom:1px solid rgb(228, 228, 228);
 }
+
 .NamePosition{
   background-color:rgb(0, 212, 131);
-height:40px;
+  height:40px;
   line-height: 40px;
   padding-left:15px;
   padding-right:15px;
@@ -442,6 +557,8 @@ height:40px;
   float:right;
 }
 .wrongNet{
+    transition:0.2s;
+  cursor: pointer;
   text-align: center;
   height:40px;
   line-height: 40px;
@@ -458,14 +575,13 @@ height:40px;
   background-color:rgb(223, 92, 92);
   float:right;
 }
+.wrongNet:hover{
+  background-color:rgb(192, 75, 75);
+}
 ::placeholder{
   color:rgb(182, 182, 182)
 }
-.settingValueHeader{
-  float:right;
-  width:100px;
-  margin-right:195px;
-}
+
 .settingValue{
   padding-top:2px;
   float:right;
@@ -475,7 +591,8 @@ height:40px;
   font-size: 17px;
   border:1px solid rgb(0, 183, 255);
   border-radius:5px;
-  margin-right:156px;
+  margin-right:10px;
+  margin-top:2px;
 }
 .submitHolder{
   font-size:15px;
@@ -510,7 +627,7 @@ height:40px;
   margin-right:20px;
   float:right;
   height:30px;
-  width:70px;
+  width:130px;
 }
 .holderButton:hover{
    background-color:rgb(223, 92, 92);
@@ -540,6 +657,7 @@ height:40px;
   text-align: center;
   line-height:30px;
   border-radius: 5px;
+  left:0;
 }
 .holderAddress{
   display:inline-block;
@@ -585,13 +703,13 @@ height:40px;
   right:0;
   top:0;
   line-height:2;
-  top:11px;
+  top:6px;
   right:23px;
   font-weight: 600;
 }
 .infoToken{
   position: relative;
-  top:11px;
+  top:8px;
   line-height:2;
   text-align: left;
   left:23px;
@@ -670,9 +788,10 @@ button{
   height:34px;
   border:none;
   background-color:rgb(0, 183, 255);
-  width:100px;
+  width:130px;
   color:white;
   font-size:16px;
+  vertical-align: top;
 }
 .submit:hover{
   background-color:rgb(0, 157, 219);
@@ -708,7 +827,7 @@ button{
   margin-left:30px;
   border:1px solid rgb(0, 183, 255);
   border-radius:5px 0px 0px 5px;
-  width:calc(100% - 160px);
+  width:calc(100% - 195px);
 }
 .tokenInfo{
   z-index:0;
@@ -717,11 +836,11 @@ button{
   box-shadow: -1px 4px 10px -1px rgba(34, 60, 80, 0.05);
   position:absolute;
   right:calc(10% - 13px);
-  margin-top:-122px;
+  margin-top:-112px;
   border:1px solid rgb(228, 228, 228);
   background-color:white;
   width:300px;
-  height:120px;
+  height:110px;
   border-radius: 8px;
 }
 .top-row{
@@ -737,7 +856,7 @@ button{
   background-color:white;
   border-radius: 8px;
   padding-top:15px;
-  padding-bottom:40px;
+  padding-bottom:30px;
   width:calc(100% - 330px);
   left:0;
 }
@@ -883,7 +1002,7 @@ button{
 .loading-status{
   position:absolute;
   height:100vh;
-  width:calc(100% - 140px);
+  width:100%;
   margin-top:0;
   top:0;
   background: #f7f8fa;

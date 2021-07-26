@@ -5,25 +5,25 @@
             <span v-if="!loadingBurn">Remove</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </button>
-        <button class="demoteButton" v-if="holder.isAdmin && isManager" :disabled="!hasPermission||currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="demote(holder.holder)">
+        <button class="demoteButton" v-if="holder.isAdmin && isManager" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="demote(holder.holder)">
             <span v-if="!loadingDemote">Demote to Member</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </button>
-        <button class="promoteButton" v-else-if="isManager" :disabled="!hasPermission||currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="promote(holder.holder)">
+        <button class="promoteButton" v-else-if="isManager" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="promote(holder.holder)">
             <span v-if="!loadingDemote">Promote to Admin</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </button>
-        <div class="role">{{holder.isAdmin?'Admin ':'Member '}}<span>{{holder.isManager?'& Manager':''}}</span></div>
+        <div class="role">{{holder.isAdmin?'Admin ':'Member '}}<span>{{holder.isManager?' Manager':''}}</span></div>
 
-        <button :class="[holder.name ? 'updateName' : 'addName']" v-on:click="openName()">
+        <button v-if="hasPermission" :class="[holder.name ? 'updateName' : 'addName']" v-on:click="openName()">
             <span v-if="holder.name">{{holder.name}}</span><span v-else>+ Add Name</span>
         </button>
 
-        <button :class="[holder.name ? 'updatePosition' : 'addPosition']" v-on:click="openPosition()">
+        <button v-if="hasPermission" :class="[holder.name ? 'updatePosition' : 'addPosition']" v-on:click="openPosition()">
             <span v-if="holder.position">{{holder.position}}</span><span v-else>+ Add Position</span>
         </button>
 
-      <div class="modalDiv">
+      <div class="modalDiv" v-if="hasPermission">
          <div v-if="openNameModal||openPositionModal" class="closeModalBackground" v-on:click="openNameModal=false; openPositionModal=false;"></div>
          <div v-if="openNameModal" class="nameModal">
           Change user name: <br>
@@ -34,7 +34,7 @@
           </button>
         </div>
 
-      <div class="positionDiv">
+      <div class="positionDiv"  v-if="hasPermission">
         <div v-if="openPositionModal" class="positionModal">
           Change user position: <br>
           <input type="text" class="input" v-model="newPosition">
@@ -86,7 +86,13 @@ export default {
       if (position !== '') {
         try {
           this.loadingPosition = true
-          const tx = await this.tokensContract.connect(this.provider.getSigner()).assignPosition(address, position)
+          const tx = await this.tokensContract.connect(this.provider.getSigner()).assignPosition(
+            address,
+            position,
+            {
+              gasPrice: '0'
+            }
+          )
           await tx.wait()
         } catch (err) {
           console.log(err)
@@ -99,7 +105,13 @@ export default {
       if (name !== '') {
         try {
           this.loadingName = true
-          const tx = await this.tokensContract.connect(this.provider.getSigner()).assignName(address, name)
+          const tx = await this.tokensContract.connect(this.provider.getSigner()).assignName(
+            address,
+            name,
+            {
+              gasPrice: '0'
+            }
+          )
           await tx.wait()
         } catch (err) {
           console.log(err)
@@ -111,7 +123,14 @@ export default {
     async promote (address) {
       try {
         this.loadingDemote = true
-        const tx = await this.ACLContract.connect(this.provider.getSigner()).grantPermission(address, this.tokensContract.address, '0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775')
+        const tx = await this.ACLContract.connect(this.provider.getSigner()).grantPermission(
+          address,
+          this.tokensContract.address,
+          '0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775',
+          {
+            gasPrice: '0'
+          }
+        )
         await tx.wait()
       } catch (err) {
         console.log(err)
@@ -122,7 +141,14 @@ export default {
     async demote (address) {
       try {
         this.loadingDemote = true
-        const tx = await this.ACLContract.connect(this.provider.getSigner()).revokePermission(address, this.tokensContract.address, '0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775')
+        const tx = await this.ACLContract.connect(this.provider.getSigner()).revokePermission(
+          address,
+          this.tokensContract.address,
+          '0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775',
+          {
+            gasPrice: '0'
+          }
+        )
         await tx.wait()
       } catch (err) {
         console.log(err)
@@ -133,7 +159,13 @@ export default {
     async burn (address) {
       try {
         this.loadingBurn = true
-        const tx = await this.tokensContract.connect(this.provider.getSigner()).burn(address, 1)
+        const tx = await this.tokensContract.connect(this.provider.getSigner()).burn(
+          address,
+          1,
+          {
+            gasPrice: '0'
+          }
+        )
         await tx.wait()
       } catch (err) {
         console.log(err)
@@ -196,9 +228,12 @@ export default {
  border-radius:3px;
 }
 .nameButton{
+     margin-top:5px;
+  vertical-align: top;
   transition:0.2s;
    border-radius:3px;
    margin-left:3px;
+
 height:26px;
  background-color:rgb(105, 175, 255);
  color:white;
