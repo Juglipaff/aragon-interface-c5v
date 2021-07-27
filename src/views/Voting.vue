@@ -81,35 +81,29 @@
               />
             </div>
 
-          <div  v-if="isAdmin" class="createVote">Token Holders</div>
+          <div v-if="isAdmin" class="createVote">Token Holders</div>
             <div v-if="isAdmin" class="tokenHolders">
               <div class="holderHeader">Holder</div>
               <HOLDER
-              v-for="holder in holders"
-              :key="holder.address"
-              @update="update"
-              :isManager="isManager"
-              :isAdmin="isAdmin"
-              :ACLContract="ACLContract"
-              :provider="provider"
-              :tokensContract="tokensContract"
-              :holder="holder"
-              :currentAccount="currentAccount"
-              :hasPermission="hasPermission"
-              :isRightChain="rightChainId"
+                v-for="holder in holders"
+                :key="holder.address"
+                @update="update"
+                :isManager="isManager"
+                :isAdmin="isAdmin"
+                :managerContract="managerContract"
+                :provider="provider"
+                :holder="holder"
+                :currentAccount="currentAccount"
+                :hasPermission="hasPermission"
+                :isRightChain="rightChainId"
               />
-              <div class="holder" v-if="isAdmin">
+              <div class="holder">
                 <input class="inputHolder" placeholder="Address" v-model="newAddress">
                 <button class="submitHolder" :disabled="!hasPermission||newAddress===''||currentAccount.length===0||loadingMint||!rightChainId" v-on:click="mint(newAddress)">
                   <span v-if="!loadingMint">Add Participant</span>
                   <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 </button>
               </div>
-            </div>
-
-            <!-- <div v-if="hasPermission" class="createVote">Vote Settings</div> -->
-            <div v-if="hasPermission" class="tokenHolders">
-
             </div>
 
           <div class="createVote">Closed Proposals - {{closedVotes.length}}</div>
@@ -145,6 +139,7 @@ import votingABI from '../voting.json'
 import tokensABI from '../tokens.json'
 import tokenABI from '../miniMe.json'
 import aclABI from '../acl.json'
+import managerABI from '../manager.json'
 import { encodeCallScript } from '@aragon/connect-core'
 
 export default {
@@ -159,10 +154,11 @@ export default {
       currentAccount: [],
       rpcUrl: 'https://rpc.c5v.network/',
 
-      votingAddress: '0xb88797d333af0bd6cd97c2eb6fae562fe1135b25',
-      tokensAddress: '0x02fc711a917320f6e598e41704827c94d7f5f83a',
-      tokenAddress: '0x8de36eda596c8b615435fccedade18408b798980',
-      ACLAddress: '0xb6a1025f9f95fb8090d91cd0c2742a73be903d6b',
+      votingAddress: '0xa42a503a3c35d215ab9540446196427c498054e2',
+      tokensAddress: '0xfd0a27912e687ae41e8fb3da346615893e519538',
+      tokenAddress: '0x57a2e4ef40d94275f261c83aeefdf3387c3cbca7',
+      ACLAddress: '0x127b94a79cfa9cca2d9cf488f391fc88d73ae3c7',
+      managerAddress: '0x670102311c97d6642b0e249b459b8b5634ad3c7c',
 
       provider: null,
       voting: null,
@@ -187,6 +183,7 @@ export default {
       tokensContract: null,
       tokenContract: null,
       ACLContract: null,
+      managerContract: null,
       rightChainId: false,
       isAdmin: false,
       manager: false,
@@ -235,6 +232,7 @@ export default {
     this.tokensContract = new ethers.Contract(this.tokensAddress, tokensABI, this.provider)
     this.tokenContract = new ethers.Contract(this.tokenAddress, tokenABI, this.provider)
     this.ACLContract = new ethers.Contract(this.ACLAddress, aclABI, this.provider)
+    this.managerContract = new ethers.Contract(this.managerAddress, managerABI, this.provider)
 
     this.token.name = await this.tokenContract.name()
     this.token.symbol = await this.tokenContract.symbol()
@@ -301,7 +299,7 @@ export default {
       try {
         if (ethers.utils.isAddress(to)) {
           this.loadingMint = true
-          const tx = await this.tokensContract.connect(this.provider.getSigner()).mint(
+          const tx = await this.managerContract.connect(this.provider.getSigner()).mint(
             to,
             1,
             {
@@ -382,28 +380,16 @@ export default {
 
     async update () {
       try {
-        this.manager = await this.ACLContract.getPermissionManager(this.tokensAddress, '0xa49807205ce4d355092ef5a8a18f56e8913cf4a201fbe287825b095693c21775')
+        this.manager = await this.managerContract.manager()
         const tokenHolders = await this.tokenContract.getTokenHolders()
-        const adminList = await this.ACLContract.getAdmins()
-        console.log(tokenHolders)
+        const adminList = await this.managerContract.getAdmins()
         this.holders = tokenHolders.map((item) => ({
           ...item,
-          isAdmin: adminList.includes(item.holder),
+          isAdmin: adminList.includes(item.holder) || item.holder.toLowerCase() === this.manager.toLowerCase(),
           isManager: item.holder.toLowerCase() === this.manager.toLowerCase(),
           hasPermission: true
         }))
-
-        if (!this.holders.find((a) => a.holder === this.manager)) {
-          this.holders.push({
-            holder: this.manager,
-            name: '',
-            position: '',
-            isAdmin: adminList.includes(this.manager),
-            isManager: true,
-            hasPermission: false
-          })
-        }
-
+        console.log(this.holders)
         this.holders = this.holders.sort((a, b) => {
           if (a.isManager) {
             return -1
@@ -426,7 +412,7 @@ export default {
         if (this.currentAccount[0]) {
           var accountInfo = tokenHolders.find((a) => { return a.holder.toLowerCase() === this.currentAccount[0].toLowerCase() })
           this.hasPermission = !!accountInfo
-          this.isAdmin = adminList.includes(ethers.utils.getAddress(this.currentAccount[0]))
+          this.isAdmin = adminList.includes(ethers.utils.getAddress(this.currentAccount[0])) || this.manager === ethers.utils.getAddress(this.currentAccount[0])
         } else {
           this.hasPermission = false
           this.isAdmin = false
