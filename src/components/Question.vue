@@ -2,9 +2,8 @@
     <div class="question">
       <div class="title"><span class="id">#{{this.question.id}}: </span>
         <span v-if="isText">{{questionTitle}}</span>
-        <iframe class='pdf' v-else-if="question.script === '0x00000006'" title="iframe" :src="`https://docs.google.com/gview?embedded=true&url=${question.metadata}&amp;embedded=true`"/>
+        <div v-else-if="question.script === '0x00000006'" class="pdfContainer"><iframe class='pdf' title="iframe" :src="question.metadata"/><a class="newTab" target="_blank" :href="question.metadata"><font-awesome-icon :icon="['fa', 'external-link-alt']" /></a></div>
       </div>
-
       <div class="progress">
         Yes: {{question.yea}} <span v-if="!question.executed&&!expired" class="buttons">
         <button class="yes" v-if="hasPermission && canVote" v-on:click="vote(true)" :disabled="votedYes || !currentAccount || loading || !isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
@@ -161,7 +160,9 @@ export default {
         })
     }
   },
+  // :src="`https://docs.google.com/gview?embedded=true&url=${question.metadata}&amp;embedded=true`"
   methods: {
+
     async getMessage () {
       if (this.question.script === '0x00000001') {
         this.questionTitle = this.question.metadata
@@ -235,11 +236,38 @@ export default {
 }
 </script>
 <style scoped>
+.pdfContainer:hover .newTab:not(:hover) {
+  opacity:1;
+}
+
+.newTab{
+  transition:0.2s;
+  opacity:0;
+    height: 0px;
+    display: block;
+    width: 0px;
+    background-color: rgb(20, 20, 20,0.6);
+    color: white;
+    margin-top: -40px;
+    margin-left: 6px;
+    position: relative;
+    padding-bottom: 24px;
+    padding-right: 23px;
+    padding-left: 8px;
+    padding-top: 7px;
+    text-align: center;
+    border-radius: 4px;
+}
+.newTab:hover{
+   opacity:1;
+  background-color: rgb(20, 20, 20,0.8);
+}
 .pdf{
   min-height:250px;
   height:100%;
   border:none;
   width:100%;
+  z-index:997;
 }
 .rejected{
   color:rgb(255, 105, 105);
