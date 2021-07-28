@@ -135,11 +135,11 @@
 import { ethers } from 'ethers'
 import Question from '../components/Question.vue'
 import Holder from '../components/Holder.vue'
-import votingABI from '../voting.json'
-import tokensABI from '../tokens.json'
-import tokenABI from '../miniMe.json'
-import aclABI from '../acl.json'
-import managerABI from '../manager.json'
+import votingABI from '../../ABIs/voting.json'
+import tokensABI from '../../ABIs/tokens.json'
+import tokenABI from '../../ABIs/miniMe.json'
+import aclABI from '../../ABIs/acl.json'
+import managerABI from '../../ABIs/manager.json'
 import { encodeCallScript } from '@aragon/connect-core'
 
 export default {
