@@ -49,7 +49,7 @@
                 <span v-else>Create Proposal</span>
               </button>
               <button class="submitFile" v-on:click="$refs.file.click()"  :disabled="currentAccount.length===0 ||!rightChainId||fileUploading||loadingCreate">
-                <div v-if="fileUploading" class="lds-dual-ring"></div>
+                <div v-if="fileUploading||loadingCreate" class="lds-dual-ring"></div>
                 <font-awesome-icon v-else :icon="['fas', 'file']" />
               </button>
 
