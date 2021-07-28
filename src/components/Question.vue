@@ -1,9 +1,13 @@
 <template>
     <div class="question">
-      <div class="title"><span class="id">#{{this.question.id}}: </span>{{questionTitle}}</div>
+      <div class="title"><span class="id">#{{this.question.id}}: </span>
+        <span v-if="isText">{{questionTitle}}</span>
+        <iframe class='pdf' v-else-if="question.script === '0x00000006'" title="iframe" :src="`https://docs.google.com/gview?embedded=true&url=${question.metadata}&amp;embedded=true`"/>
+      </div>
+
       <div class="progress">
         Yes: {{question.yea}} <span v-if="!question.executed&&!expired" class="buttons">
-        <button class="yes" v-if="hasPermission" v-on:click="vote(true)" :disabled="!canVote || votedYes || !currentAccount || loading||!isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
+        <button class="yes" v-if="hasPermission && canVote" v-on:click="vote(true)" :disabled="votedYes || !currentAccount || loading || !isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
       </span><br>
         <progress-bar
           :options="yesOptions"
@@ -12,7 +16,7 @@
       </div>
       <div class="progress">
         No: {{question.nay}} <span v-if="!question.executed&&!expired" class="buttons">
-        <button class="no" v-if="hasPermission" v-on:click="vote(false)" :disabled="!canVote || votedNo || !currentAccount || loading||!isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
+        <button class="no" v-if="hasPermission && canVote" v-on:click="vote(false)" :disabled="votedNo || !currentAccount || loading || !isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
       </span><br>
         <progress-bar
           :options="noOptions"
@@ -34,7 +38,6 @@ export default {
   props: {
     votingContract: Object,
     question: Object,
-    tokenSymbol: String,
     currentAccount: String,
     provider: Object,
     hasPermission: Boolean,
@@ -43,6 +46,7 @@ export default {
   },
   data () {
     return {
+      isText: true,
       time: '',
       questionTitle: '',
       canVote: false,
@@ -177,6 +181,8 @@ export default {
         this.questionTitle = `${methodName} ${amount}%`
         return
       }
+
+      this.isText = false
       this.questionTitle = 'Unknown method'
     },
     getBarValues () {
@@ -229,6 +235,12 @@ export default {
 }
 </script>
 <style scoped>
+.pdf{
+  min-height:250px;
+  height:100%;
+  border:none;
+  width:100%;
+}
 .rejected{
   color:rgb(255, 105, 105);
 }
@@ -242,7 +254,8 @@ export default {
   text-overflow: ellipsis;
   overflow: hidden;
   margin-top:9px;
-  height:70px;
+  min-height:70px;
+ /* height:200px;*/
   margin-right:35px;
   margin-left:35px;
   padding-bottom:4px;
@@ -306,6 +319,7 @@ button:disabled{
   border-radius:8px;
   margin-left: 10px;
   margin-right: 10px;
+  vertical-align: top;
 
 }
 .lds-ellipsis {

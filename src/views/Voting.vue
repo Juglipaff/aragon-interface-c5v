@@ -44,10 +44,17 @@
             <div class="questionInput">
               <div class="question-title">Question</div>
               <input class="inputQuestion" v-model="question">
-              <button class="submit" :disabled="!hasPermission||question===''||currentAccount.length===0 ||loadingCreate||!rightChainId" v-on:click="createVote(question)">
-                <span v-if="!loadingCreate">Create Proposal</span>
-                <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+              <button class="submit" :disabled="question===''||currentAccount.length===0 ||loadingCreate||!rightChainId" v-on:click="createVote(question)">
+                <div  v-if="loadingCreate"  class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+                <span v-else>Create Proposal</span>
               </button>
+              <button class="submitFile" v-on:click="$refs.file.click()"  :disabled="currentAccount.length===0 ||!rightChainId||fileUploading||loadingCreate">
+                <div v-if="fileUploading" class="lds-dual-ring"></div>
+                <font-awesome-icon v-else :icon="['fas', 'file']" />
+              </button>
+
+              <input type="file"  @change="uploadFile" ref="file" style="display: none; position:absolute;" single>
+
             </div>
             <div class="tokenInfo">
               <div class="tokenInfoHeader">Token Info</div>
@@ -69,7 +76,6 @@
               v-for="entry in openVotes"
               :key="entry.id"
               @update="update"
-              :tokenSymbol="token.symbol"
               :votingContract="votingContract"
               :question="entry"
               :votingAddress="votingAddress"
@@ -88,13 +94,11 @@
                 v-for="holder in holders"
                 :key="holder.address"
                 @update="update"
-                :isManager="isManager"
                 :isAdmin="isAdmin"
                 :managerContract="managerContract"
                 :provider="provider"
                 :holder="holder"
                 :currentAccount="currentAccount"
-                :hasPermission="hasPermission"
                 :isRightChain="rightChainId"
               />
               <div class="holder">
@@ -112,7 +116,6 @@
                 v-for="entry in closedVotes"
                 :key="entry.id"
                 @update="update"
-                :tokenSymbol="token.symbol"
                 :votingContract="votingContract"
                 :question="entry"
                 :votingAddress="votingAddress"
@@ -141,6 +144,7 @@ import tokenABI from '../ABIs/miniMe.json'
 import aclABI from '../ABIs/acl.json'
 import managerABI from '../ABIs/manager.json'
 import { encodeCallScript } from '@aragon/connect-core'
+import { create } from 'ipfs-http-client'
 
 export default {
   name: 'Voting',
@@ -153,6 +157,7 @@ export default {
       chainId: 304,
       currentAccount: [],
       rpcUrl: 'https://rpc.c5v.network/',
+      ipfsUrl: 'https://ipfs.io/ipfs/',
 
       votingAddress: '0xa42a503a3c35d215ab9540446196427c498054e2',
       tokensAddress: '0xfd0a27912e687ae41e8fb3da346615893e519538',
@@ -189,7 +194,9 @@ export default {
       manager: false,
       userName: null,
       userPosition: null,
-      showSettingsModal: false
+      showSettingsModal: false,
+      file: null,
+      fileUploading: false
     }
   },
   computed: {
@@ -237,6 +244,11 @@ export default {
     this.token.name = await this.tokenContract.name()
     this.token.symbol = await this.tokenContract.symbol()
     this.token.transferable = await this.tokenContract.transfersEnabled()
+    this.manager = await this.managerContract.manager()
+
+    // Initialize IPFS interface
+    this.ipfs = create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+
     await this.update()
     this.pageLoading = false
   },
@@ -273,12 +285,61 @@ export default {
       }
     },
 
+    async uploadFile (event) {
+      const file = event.target.files[0]
+      if (file) {
+        this.fileUploading = true
+        const fileTypes = ['pdf'] // ['jpg', 'jpeg', 'png', 'txt', 'pdf', 'mp3', 'mp4', 'webm']
+        const extension = file.name.split('.').pop().toLowerCase()
+        if (!fileTypes.includes(extension)) {
+          this.fileUploading = false
+          return
+        }
+        const fileType = (extension) => {
+          if (extension === 'jpg' || extension === 'jpeg' || extension === 'png') {
+            return '0x00000002'
+          }
+          if (extension === 'mp3') {
+            return '0x00000003'
+          }
+          if (extension === 'mp4' || extension === 'webm') {
+            return '0x00000004'
+          }
+          if (extension === 'txt') {
+            return '0x00000005'
+          }
+          if (extension === 'pdf') {
+            return '0x00000006'
+          }
+        }
+        const reader = new window.FileReader()
+        reader.readAsArrayBuffer(file)
+        reader.onloadend = async () => {
+          const buffer = await Buffer.from(reader.result)
+          await this.ipfs.add(buffer).then(result => {
+            this.file = { url: this.ipfsUrl + result.path, script: fileType(extension) }
+            this.createVote('')
+          })
+          this.fileUploading = false
+        }
+        return
+      }
+      this.file = null
+    },
+
     async createVote (question) {
       try {
-        if (question !== '') {
+        var args
+        if (this.file) {
+          args = [this.file.script, this.file.url]
+        } else if (question !== '') {
+          args = ['0x00000001', question]
+        }
+
+        if (args) {
           this.loadingCreate = true
           const iface = new ethers.utils.Interface(votingABI)
-          const encodedData = iface.encodeFunctionData('newVote', ['0x00000001', question])
+          const encodedData = iface.encodeFunctionData('newVote', args)
           const script = encodeCallScript([{ to: this.votingAddress, data: encodedData }])
           const tx = await this.tokensContract.connect(this.provider.getSigner()).forward(
             script,
@@ -380,7 +441,6 @@ export default {
 
     async update () {
       try {
-        this.manager = await this.managerContract.manager()
         const tokenHolders = await this.tokenContract.getTokenHolders()
         const adminList = await this.managerContract.getAdmins()
         this.holders = tokenHolders.map((item) => ({
@@ -389,7 +449,6 @@ export default {
           isManager: item.holder.toLowerCase() === this.manager.toLowerCase(),
           hasPermission: true
         }))
-        console.log(this.holders)
         this.holders = this.holders.sort((a, b) => {
           if (a.isManager) {
             return -1
@@ -459,6 +518,20 @@ export default {
 }
 </script>
 <style scoped>
+.fileTypes{
+  margin-left:30px;
+  height:0px;
+  padding-top:12px;
+  padding-bottom:4px;
+}
+.file{
+  transition:0.1s;
+  font-size: 25px;
+  color:rgb(117, 117, 117);
+}
+.file:hover{
+  color:rgb(87, 87, 87);
+}
 .settingsHolder{
   text-align: left;
   padding-top:20px;
@@ -768,9 +841,28 @@ button{
   font-size:20px;
   margin-bottom:7px;
 }
+.submitFile{
+  transition:0.2s;
+  border-radius:7px;
+  height:34px;
+  border:none;
+  background-color:rgb(0, 183, 255);
+  width:40px;
+  color:white;
+  font-size:16px;
+  vertical-align: top;
+  margin-left:5px;
+}
+.submitFile:hover{
+  background-color:rgb(0, 157, 219);
+}
+.submitFile:disabled{
+  cursor: default;
+  background-color:rgb(196, 196, 196);
+}
 .submit{
   transition:0.2s;
-  border-radius:0 5px 5px 0px;
+  border-radius:0 7px 7px 0px;
   height:34px;
   border:none;
   background-color:rgb(0, 183, 255);
@@ -813,7 +905,7 @@ button{
   margin-left:30px;
   border:1px solid rgb(0, 183, 255);
   border-radius:5px 0px 0px 5px;
-  width:calc(100% - 195px);
+  width:calc(100% - 235px);
 }
 .tokenInfo{
   z-index:0;
@@ -999,4 +1091,31 @@ button{
   font-size:26px;
   color:white;
 }
+
+.lds-dual-ring {
+  display: inline-block;
+  width: 17px;
+  height: 17px;
+  margin-left:-6px;
+  margin-top:-6px;
+}
+.lds-dual-ring:after {
+  content: " ";
+  display: block;
+  width: 17px;
+  height: 17px;
+  border-radius: 50%;
+  border: 4px solid #fff;
+  border-color: #fff transparent #fff transparent;
+  animation: lds-dual-ring 1.2s linear infinite;
+}
+@keyframes lds-dual-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
 </style>

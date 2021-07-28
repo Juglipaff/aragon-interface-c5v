@@ -1,7 +1,7 @@
 <template>
     <div :class="[holder.isManager ? 'manager' : (holder.isAdmin ? 'admin' : ''), 'holder2']">
         <div :class="[holder.isManager ? 'addressViolet' : holder.isAdmin ? 'addressRed' : 'addressBlue','holderAddress']">{{cutAddress(holder.holder)}}</div>
-        <button v-if="isAdmin&&!holder.isManager" class="holderButton" :disabled="!hasPermission||currentAccount.length===0||!isRightChain||loadingBurn" v-on:click="burn(holder.holder)">
+        <button v-if="isAdmin&&!holder.isManager" class="holderButton" :disabled="currentAccount.length===0||!isRightChain||loadingBurn" v-on:click="burn(holder.holder)">
             <span v-if="!loadingBurn">Remove</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </button>
@@ -15,11 +15,11 @@
         </button>
         <div class="role">{{holder.isAdmin?'Admin ':'Member '}}<span>{{holder.isManager?' Manager':''}}</span></div>
 
-        <button v-if="isAdmin" :class="[holder.name ? 'updateName' : 'addName']" v-on:click="openName()">
+        <button v-if="isAdmin" :class="[holder.name ? 'updateName' : 'addName']" v-on:click="openNameModal=true">
             <span v-if="holder.name">{{holder.name}}</span><span v-else>+ Add Name</span>
         </button>
 
-        <button v-if="isAdmin" :class="[holder.position ? 'updatePosition' : 'addPosition']" v-on:click="openPosition()">
+        <button v-if="isAdmin" :class="[holder.position ? 'updatePosition' : 'addPosition']" v-on:click="openPositionModal=true">
             <span v-if="holder.position">{{holder.position}}</span><span v-else>+ Add Position</span>
         </button>
 
@@ -28,7 +28,7 @@
          <div v-if="openNameModal" class="nameModal">
           Change user name: <br>
           <input type="text" class="input" v-model="newName">
-          <button class="nameButton" :disabled="!hasPermission||currentAccount.length===0||!isRightChain||loadingName" v-on:click="assignName(holder.holder,newName)">
+          <button class="nameButton" :disabled="currentAccount.length===0||!isRightChain||loadingName" v-on:click="assignName(holder.holder,newName)">
               <span v-if="!loadingName">Change</span>
               <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
           </button>
@@ -38,7 +38,7 @@
         <div v-if="openPositionModal" class="positionModal">
           Change user position: <br>
           <input type="text" class="input" v-model="newPosition">
-          <button class="nameButton" :disabled="!hasPermission||currentAccount.length===0||!isRightChain||loadingPosition" v-on:click="assignPosition(holder.holder,newPosition)">
+          <button class="nameButton" :disabled="currentAccount.length===0||!isRightChain||loadingPosition" v-on:click="assignPosition(holder.holder,newPosition)">
               <span v-if="!loadingPosition">Change</span>
               <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
           </button>
@@ -57,8 +57,6 @@ export default {
     managerContract: Object,
     holder: Object,
     currentAccount: Array,
-    hasPermission: Boolean,
-    isManager: Boolean,
     isAdmin: Boolean,
     isRightChain: Boolean
   },
@@ -75,12 +73,6 @@ export default {
     }
   },
   methods: {
-    openPosition () {
-      this.openPositionModal = true
-    },
-    openName () {
-      this.openNameModal = true
-    },
     async assignPosition (address, position) {
       if (position !== '') {
         try {
