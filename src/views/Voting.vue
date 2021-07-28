@@ -144,7 +144,8 @@ import tokenABI from '../ABIs/miniMe.json'
 import aclABI from '../ABIs/acl.json'
 import managerABI from '../ABIs/manager.json'
 import { encodeCallScript } from '@aragon/connect-core'
-import { create } from 'ipfs-http-client'
+import IPFS from 'ipfs-api'
+// import IPFS from 'ipfs-http-client'
 
 export default {
   name: 'Voting',
@@ -247,7 +248,7 @@ export default {
     this.manager = await this.managerContract.manager()
 
     // Initialize IPFS interface
-    this.ipfs = create({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
+    this.ipfs = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
 
     await this.update()
     this.pageLoading = false
@@ -317,7 +318,9 @@ export default {
         reader.onloadend = async () => {
           const buffer = await Buffer.from(reader.result)
           await this.ipfs.add(buffer).then(result => {
-            this.file = { url: this.ipfsUrl + result.path, script: fileType(extension) }
+            console.log(result)
+            this.file = { url: this.ipfsUrl + result[0].path, script: fileType(extension) }
+            console.log(this.file)
             this.createVote('')
           })
           this.fileUploading = false
