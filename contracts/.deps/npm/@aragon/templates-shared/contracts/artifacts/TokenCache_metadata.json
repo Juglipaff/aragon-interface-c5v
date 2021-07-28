@@ -1,0 +1,48 @@
+{
+	"compiler": {
+		"version": "0.4.24+commit.e67f0147"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			".deps/npm/@aragon/templates-shared/contracts/TokenCache.sol": "TokenCache"
+		},
+		"evmVersion": "byzantium",
+		"libraries": {},
+		"optimizer": {
+			"enabled": true,
+			"runs": 20000
+		},
+		"remappings": []
+	},
+	"sources": {
+		".deps/npm/@aragon/templates-shared/contracts/TokenCache.sol": {
+			"keccak256": "0x4833cbc00e49435915ff189e021a88293fcbd87c6c0cf8cd4d7359d943c17552",
+			"urls": [
+				"bzzr://67f8d33177ad13ac8ae57710af34a90e221a8883875bf754a1916df0e97bb349"
+			]
+		},
+		"@aragon/apps-shared-minime/contracts/ITokenController.sol": {
+			"keccak256": "0x030d1ea5543fd23d3c962cbf34b1c3b6e15d9bbfb711416e1cf4160c3bcdccaa",
+			"urls": [
+				"bzzr://64ccd0852c1b90d55248f9b56898854c32bd881a9eb61637d6ecb7430a77764c"
+			]
+		},
+		"@aragon/apps-shared-minime/contracts/MiniMeToken.sol": {
+			"keccak256": "0xae8693d9ccee144cfd4949f87d0994d12e7d232b0b39d3f2f72a7b5c1e54800c",
+			"urls": [
+				"bzzr://077b0f24788509f8aecd01587c0522a3b22c15c6bbdfe8b65a5234f3ae3502cf"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,36 @@
+{
+	"compiler": {
+		"version": "0.4.24+commit.e67f0147"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			".deps/npm/@aragon/os/contracts/acl/ACLSyntaxSugar.sol": "ACLHelpers"
+		},
+		"evmVersion": "byzantium",
+		"libraries": {},
+		"optimizer": {
+			"enabled": true,
+			"runs": 20000
+		},
+		"remappings": []
+	},
+	"sources": {
+		".deps/npm/@aragon/os/contracts/acl/ACLSyntaxSugar.sol": {
+			"keccak256": "0x672a96975fc17f66905e775645cc93249426ce9601aef597a13d1e449c7f89d0",
+			"urls": [
+				"bzzr://38113946d1a2270e1283cc82535a70763506c495aafd9ab5659695335028db12"
+			]
+		}
+	},
+	"version": 1
+}

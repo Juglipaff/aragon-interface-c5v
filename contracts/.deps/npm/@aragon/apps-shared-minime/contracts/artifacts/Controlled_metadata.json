@@ -1,0 +1,87 @@
+{
+	"compiler": {
+		"version": "0.4.24+commit.e67f0147"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_newController",
+						"type": "address"
+					}
+				],
+				"name": "changeController",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "controller",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			}
+		],
+		"devdoc": {
+			"methods": {
+				"changeController(address)": {
+					"params": {
+						"_newController": "The new controller of the contract"
+					}
+				}
+			}
+		},
+		"userdoc": {
+			"methods": {
+				"changeController(address)": {
+					"notice": "Changes the controller of the contract"
+				}
+			}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"/.deps/npm/@aragon/apps-shared-minime/contracts/MiniMeToken.sol": "Controlled"
+		},
+		"evmVersion": "byzantium",
+		"libraries": {},
+		"optimizer": {
+			"enabled": true,
+			"runs": 20000
+		},
+		"remappings": []
+	},
+	"sources": {
+		"/.deps/npm/@aragon/apps-shared-minime/contracts/ITokenController.sol": {
+			"keccak256": "0x030d1ea5543fd23d3c962cbf34b1c3b6e15d9bbfb711416e1cf4160c3bcdccaa",
+			"urls": [
+				"bzzr://64ccd0852c1b90d55248f9b56898854c32bd881a9eb61637d6ecb7430a77764c"
+			]
+		},
+		"/.deps/npm/@aragon/apps-shared-minime/contracts/MiniMeToken.sol": {
+			"keccak256": "0xdd0f6c4ad5316758428e6c3a87eb59651d51c4c828f5aa0c34d243c924244f7d",
+			"urls": [
+				"bzzr://150c21a6b2fcbd9d68a8d46659b2b454034c79777dae282fe7bfcb6c7dc01030"
+			]
+		}
+	},
+	"version": 1
+}

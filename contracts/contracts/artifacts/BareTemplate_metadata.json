@@ -1,0 +1,550 @@
+{
+	"compiler": {
+		"version": "0.4.24+commit.e67f0147"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_appId",
+						"type": "bytes32"
+					},
+					{
+						"name": "_roles",
+						"type": "bytes32[]"
+					},
+					{
+						"name": "_authorizedAddress",
+						"type": "address"
+					},
+					{
+						"name": "_initializeCallData",
+						"type": "bytes"
+					}
+				],
+				"name": "newInstance",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [],
+				"name": "newInstance",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"name": "_daoFactory",
+						"type": "address"
+					},
+					{
+						"name": "_ens",
+						"type": "address"
+					},
+					{
+						"name": "_miniMeFactory",
+						"type": "address"
+					},
+					{
+						"name": "_aragonID",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"name": "dao",
+						"type": "address"
+					}
+				],
+				"name": "DeployDao",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"name": "dao",
+						"type": "address"
+					}
+				],
+				"name": "SetupDao",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"name": "token",
+						"type": "address"
+					}
+				],
+				"name": "DeployToken",
+				"type": "event"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": false,
+						"name": "appProxy",
+						"type": "address"
+					},
+					{
+						"indexed": false,
+						"name": "appId",
+						"type": "bytes32"
+					}
+				],
+				"name": "InstalledApp",
+				"type": "event"
+			}
+		],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/BareTemplate.sol": "BareTemplate"
+		},
+		"evmVersion": "byzantium",
+		"libraries": {},
+		"optimizer": {
+			"enabled": true,
+			"runs": 20000
+		},
+		"remappings": []
+	},
+	"sources": {
+		"@aragon/apps-agent/contracts/Agent.sol": {
+			"keccak256": "0xd90f3ec7479a49011f6e35a1c1b85322e6d634f41f0d4bcb89023102abbd3203",
+			"urls": [
+				"bzzr://1d4051baf6c7b7d25e8a4e8c39744bf7bdebdc08bd565b82e7508e582263e082"
+			]
+		},
+		"@aragon/apps-agent/contracts/SignatureValidator.sol": {
+			"keccak256": "0x8900d75cd2ac28d3290df3aa09db7d4c89e0de0ae1598ee8bef450b22731118b",
+			"urls": [
+				"bzzr://e6eb49039bec302753ef25b89bcd0170575d6366312d620f9180a1d7b654ef50"
+			]
+		},
+		"@aragon/apps-agent/contracts/standards/ERC1271.sol": {
+			"keccak256": "0x0e0d434f9f3c740b8f94dab93af3b226dac4d40af885adbbe81ff2a4fd957fc1",
+			"urls": [
+				"bzzr://db2f5ca644dc5a0fd97cbe40d60bb416fc1a367cdbf663edf6defee00902b3a6"
+			]
+		},
+		"@aragon/apps-agent/contracts/standards/IERC165.sol": {
+			"keccak256": "0x54c5b6c1e72d3f1a3ad7212600f2a5ae39dc9d990b73d88e614b11dd58f8d7ce",
+			"urls": [
+				"bzzr://3bdae67ef0608dcc80e03686dc125e90195f665e4f16e7f125f47a1fb9ccb7d9"
+			]
+		},
+		"@aragon/apps-agent/contracts/standards/IERC721Receiver.sol": {
+			"keccak256": "0x0f80bfb9c096d9dc68a94b93038a7de0247396b09d3b10fb7a339f336d7d2f6b",
+			"urls": [
+				"bzzr://ff15acf481b2d6cff27a257febcce8d7d6f7aeab67cddd531d4e054744d9c1f3"
+			]
+		},
+		"@aragon/apps-finance/contracts/Finance.sol": {
+			"keccak256": "0xafc1ce43dacd96650713ee23b76e9af1fecdc2c2ceaa182b2d9b0227fcdc279d",
+			"urls": [
+				"bzzr://8decf865d0751bc38c94685437815d4b03ee898e370c6f94330573a43fa8fe0e"
+			]
+		},
+		"@aragon/apps-payroll/contracts/Payroll.sol": {
+			"keccak256": "0xd47a22903b2f0159b7002e3105d716311f8cb209e26c80c1ae26dc40c3ecebad",
+			"urls": [
+				"bzzr://104b7b918f1f4dc587da128bf004a86037843e3e1d928bb81aba8b5bd6dd5452"
+			]
+		},
+		"@aragon/apps-shared-minime/contracts/ITokenController.sol": {
+			"keccak256": "0x030d1ea5543fd23d3c962cbf34b1c3b6e15d9bbfb711416e1cf4160c3bcdccaa",
+			"urls": [
+				"bzzr://64ccd0852c1b90d55248f9b56898854c32bd881a9eb61637d6ecb7430a77764c"
+			]
+		},
+		"@aragon/apps-shared-minime/contracts/MiniMeToken.sol": {
+			"keccak256": "0xae8693d9ccee144cfd4949f87d0994d12e7d232b0b39d3f2f72a7b5c1e54800c",
+			"urls": [
+				"bzzr://077b0f24788509f8aecd01587c0522a3b22c15c6bbdfe8b65a5234f3ae3502cf"
+			]
+		},
+		"@aragon/apps-survey/contracts/Survey.sol": {
+			"keccak256": "0x13b223a09b42c5c7b3ab2a4360fb71f2bb6c021ef59d315c0196ab269501698c",
+			"urls": [
+				"bzzr://c6ad8b805a0861a488cd9c5762cd9ea9aa47334b9819c108bd59bc2b75b97018"
+			]
+		},
+		"@aragon/apps-token-manager/contracts/TokenManager.sol": {
+			"keccak256": "0x60fc91f7ffac56d5f897a6e1bfa08ae3fb42818a46262106fdf984532b7a9d40",
+			"urls": [
+				"bzzr://368e3851ece2d0d6779ed9b957baf15d081802bb08a33f8e2365fa7b61f235d2"
+			]
+		},
+		"@aragon/apps-vault/contracts/Vault.sol": {
+			"keccak256": "0x760b4fd895153fd398391df3b27474d1913d792fadec2172dd10d3686d3416e6",
+			"urls": [
+				"bzzr://319b753d448e834740429bcb046a02eef5ad0e50b60a63ada89ebd53bf1c112b"
+			]
+		},
+		"@aragon/apps-voting/contracts/Voting.sol": {
+			"keccak256": "0x02d197def022067a0841bed3bbdfdf08403a43ab9ffa8e69cd6bf45318315b5f",
+			"urls": [
+				"bzzr://7923ff46bfa140c3b7c1ed55e1f8dc9b4a3f77fc620454ad2f246d339b959ce8"
+			]
+		},
+		"@aragon/id/contracts/IFIFSResolvingRegistrar.sol": {
+			"keccak256": "0x8814289dea9fc410164c2494929c38e289e42e69e7546833cf48b59b003d944f",
+			"urls": [
+				"bzzr://57f4999c4e6ba3590cc6720f4f3a34937460522ed29de93f25494552b5fe710b"
+			]
+		},
+		"@aragon/id/contracts/ens/IPublicResolver.sol": {
+			"keccak256": "0xd3cfaad61764512d8becada0f59d1a9db2a7349df2610e4a77f0fbf49750af03",
+			"urls": [
+				"bzzr://1033a8dde4c1593c8322639384e4aff6e286211a5315f290272f5121a54f7894"
+			]
+		},
+		"@aragon/os/contracts/acl/ACL.sol": {
+			"keccak256": "0x1c850377b65614983bda130233257eab46f6de300d33c585c3c90af962fb535f",
+			"urls": [
+				"bzzr://a636ebe8d319e86e49e7e4efd44238b260d527538225813a62ad357b143d38cb"
+			]
+		},
+		"@aragon/os/contracts/acl/ACLSyntaxSugar.sol": {
+			"keccak256": "0x672a96975fc17f66905e775645cc93249426ce9601aef597a13d1e449c7f89d0",
+			"urls": [
+				"bzzr://38113946d1a2270e1283cc82535a70763506c495aafd9ab5659695335028db12"
+			]
+		},
+		"@aragon/os/contracts/acl/IACL.sol": {
+			"keccak256": "0x7e081f42891bbcc8fa9f3a67efb34ecafa8e2c075e37a01d74d221c45ddfdd10",
+			"urls": [
+				"bzzr://6b8740d151668474650eb976b8b2ca50206e9a8948c524104b6a73f905a54e5c"
+			]
+		},
+		"@aragon/os/contracts/acl/IACLOracle.sol": {
+			"keccak256": "0x76b78ed68eafa0e3c9a4a9e4151f136f13dbcca0ac65cc43501db7b6a1189867",
+			"urls": [
+				"bzzr://03d2e19ae86e4de3620d9fffd818f43cccd0df28d814a2337144943f59d16057"
+			]
+		},
+		"@aragon/os/contracts/apm/APMNamehash.sol": {
+			"keccak256": "0x8af7350d0193d35069b3d64c276ea446b0ed1503c57bfcd828a1fd92cb7257a8",
+			"urls": [
+				"bzzr://a57fdb94d0e9123b106203b8e30babbc89692bb73fc0e37707427382860bdc3a"
+			]
+		},
+		"@aragon/os/contracts/apm/Repo.sol": {
+			"keccak256": "0x4df44671f92e5410aa0fca7f515b562784a8da63e21e8872fdf275835d5c2dd1",
+			"urls": [
+				"bzzr://31ea9c115b16797b6f3c4c2620da057912eafe14e7382bfb5520c9451b863490"
+			]
+		},
+		"@aragon/os/contracts/apps/AppProxyBase.sol": {
+			"keccak256": "0x6d591412d30dc3d5079f8c5cab04f83ad44be376a9e4143d4a3b2067cd7a4483",
+			"urls": [
+				"bzzr://fa928f595ac4de05bb78303e1e6ee186331d10602dbb8bc56c23c9761584a26b"
+			]
+		},
+		"@aragon/os/contracts/apps/AppProxyPinned.sol": {
+			"keccak256": "0xbe6285bcc237c696e297948be02cfad8d48812ba52d67f8947b52c0546da53b1",
+			"urls": [
+				"bzzr://217ba70dd30d05d654c4537fce1d353e7e751ba44fea487559f60aa69f9f255f"
+			]
+		},
+		"@aragon/os/contracts/apps/AppProxyUpgradeable.sol": {
+			"keccak256": "0xbcc626f70099c7e859b9c2bb8ca91e72b84f9e6783f91277e40737d51bd2c433",
+			"urls": [
+				"bzzr://b4467e610b0a9d79c703c4ff711a1acce11dea6d33b79298734ef8ecc1c71728"
+			]
+		},
+		"@aragon/os/contracts/apps/AppStorage.sol": {
+			"keccak256": "0x37324058906601970b1ef5cbe8f2af93144d3b723c2a33e468142cdc753c829b",
+			"urls": [
+				"bzzr://34fb87a94cc2e91577ee2700706d69f2380184930fa6cf3a1bcd77ee6db3d2cc"
+			]
+		},
+		"@aragon/os/contracts/apps/AragonApp.sol": {
+			"keccak256": "0x342fa7437cb3e80ea702209cc90787b27d21a7d4bf101e313534c9da2a2f7875",
+			"urls": [
+				"bzzr://6df436065b114a784bd6376345e7f0b4d72e826fcf9be86bfd662bae116d1e3a"
+			]
+		},
+		"@aragon/os/contracts/common/Autopetrified.sol": {
+			"keccak256": "0x42f0422744e13674e38bfbef079af7150883aba96ddbe61c5ae50df31d42696e",
+			"urls": [
+				"bzzr://b9382dd3121d3ec25686162627ed009212bbd788dfd8e852ecac07bd2a77aa15"
+			]
+		},
+		"@aragon/os/contracts/common/ConversionHelpers.sol": {
+			"keccak256": "0x9872383d458352f5c68fa5afd1fc84ab6b172cbee33359cfa57655b8eda92416",
+			"urls": [
+				"bzzr://4636d13fecb497561ff5a2c54bb936a0339308bffa4e71a988b8ce00dcc249f3"
+			]
+		},
+		"@aragon/os/contracts/common/DelegateProxy.sol": {
+			"keccak256": "0x381a4ab9b57abf496b337146a52d533aaf6a8247941fbc19735cbde0e891e85b",
+			"urls": [
+				"bzzr://f7457df0e3f0ec11cb66a6b90017299fbb4ea1129ec88739af56682032f95c02"
+			]
+		},
+		"@aragon/os/contracts/common/DepositableDelegateProxy.sol": {
+			"keccak256": "0x80a08f88ca7051a248c6fd91283fef4b01b241d1dc97e13499f1460093ff3068",
+			"urls": [
+				"bzzr://5b130a1a8a655a0c1cb184ed7857bd68ace262d4904d2ed3f94b660721074f11"
+			]
+		},
+		"@aragon/os/contracts/common/DepositableStorage.sol": {
+			"keccak256": "0x67e1884ba4c91de1c6fe1fc2c1c632c29ed3e7894a434c049be9f1ed80539237",
+			"urls": [
+				"bzzr://94f42ad7b57e419a62b9505affe5d4b17e8a139bfc5c26ec3c17ed6572589a1a"
+			]
+		},
+		"@aragon/os/contracts/common/EtherTokenConstant.sol": {
+			"keccak256": "0x6b2fa091968161075154a77fa741a3484c891d73cd3cd14ede502ff56dd08dfc",
+			"urls": [
+				"bzzr://b2c4abc0b256f0127cede810517c8c5d80d191d28d160d2e1a1a2707eb6dc6da"
+			]
+		},
+		"@aragon/os/contracts/common/IForwarder.sol": {
+			"keccak256": "0x3dcf53bc3021c65b14d5af9f681b4bed524dd1c70a7d39add82166a94981f297",
+			"urls": [
+				"bzzr://385abfa29e4565774741854b6eb26a60282e5954d91677fc2346c1142bac1456"
+			]
+		},
+		"@aragon/os/contracts/common/IVaultRecoverable.sol": {
+			"keccak256": "0xa8e004decf086e817a864b485473b687c2c468c82af7b5011d9908586f7cbf36",
+			"urls": [
+				"bzzr://ff0028441b4a0d7dddccdd7df5bad37fc0fa6eabb07f94302b673cb971c4bcf1"
+			]
+		},
+		"@aragon/os/contracts/common/Initializable.sol": {
+			"keccak256": "0xc859366d3143499d1458ea55cb5374ae1ca1faf41763cad5e051dea2da373ba1",
+			"urls": [
+				"bzzr://8654c49806681deba0f245832394b13970e6d8163de4090e65c565619dc0d3b5"
+			]
+		},
+		"@aragon/os/contracts/common/IsContract.sol": {
+			"keccak256": "0x9dd99d770a5eed901ba749e1f02e4fae443e71e899f4909f56825dfc378da089",
+			"urls": [
+				"bzzr://8266685a89948ac1c1f1d760515c4abbae1b3f5618b03148d318f1cd3780049e"
+			]
+		},
+		"@aragon/os/contracts/common/Petrifiable.sol": {
+			"keccak256": "0x797d3a58b782032f6afc51725326c0b51dceb00f3af6b85b25bd91cc10d22504",
+			"urls": [
+				"bzzr://9b9b7a635630b71c74447a7d4e3246aace9585b450d7981308da3b195374ddc2"
+			]
+		},
+		"@aragon/os/contracts/common/ReentrancyGuard.sol": {
+			"keccak256": "0xd89653c118bbd8cace423c45daa37986c566672198a415254011c028d1831189",
+			"urls": [
+				"bzzr://bd5ce58e763a4ecc5cf4f4db00f6ef1f734b18cb888841e25690bff49e07c5eb"
+			]
+		},
+		"@aragon/os/contracts/common/SafeERC20.sol": {
+			"keccak256": "0xd251a1207e1faa4c41500bf927310bb739b1fbc0bf880f236f8e0a9236d6a03a",
+			"urls": [
+				"bzzr://b2d0f5981950b4e90eaee65c85050ac4f86a79f579f4ef38e6b281c0de980b2b"
+			]
+		},
+		"@aragon/os/contracts/common/TimeHelpers.sol": {
+			"keccak256": "0xfaba85207f0bb4bb5d7b6685a963c39a3258641bda6e523175640c3f9aeb2045",
+			"urls": [
+				"bzzr://709b5e54b8c4cabb5ec944c817f133076e3631cf009b36886c1725326b9fe92f"
+			]
+		},
+		"@aragon/os/contracts/common/Uint256Helpers.sol": {
+			"keccak256": "0x83033025a3f4402be3b7bcc9a23ce96ae4fadc7f251da8f139d73a13a3400b0c",
+			"urls": [
+				"bzzr://bd0e059eff36a66c3a28298ed5a2e1b058ce93057866ab36063e9f3095cef36f"
+			]
+		},
+		"@aragon/os/contracts/common/UnstructuredStorage.sol": {
+			"keccak256": "0xe497dcb85bbbf10224623247f39a4aeed7d3b230de2a811f3b69cb0e7d0a64d4",
+			"urls": [
+				"bzzr://8c619ede2c79a61baf84f9018ecebd86658ed8e26805141a53dec092e5e9a986"
+			]
+		},
+		"@aragon/os/contracts/common/VaultRecoverable.sol": {
+			"keccak256": "0xea4ded621a63f988b83ac27b4a23cad0a42c3d77bcf6ca7b88681ae4ea650cf4",
+			"urls": [
+				"bzzr://72e27dc718c124aaf13418a5c68a24248b6b7697aa6fe0585decac3686e12e3a"
+			]
+		},
+		"@aragon/os/contracts/evmscript/EVMScriptRegistry.sol": {
+			"keccak256": "0x0a8a940995af70625b926c4a70f3d847841f7da2601087436e3bae9b41af76c4",
+			"urls": [
+				"bzzr://fe95cca41c61cdffdb03e231fbab7c1c7a33e24cb0f48f5d5f5056fc797078cd"
+			]
+		},
+		"@aragon/os/contracts/evmscript/EVMScriptRunner.sol": {
+			"keccak256": "0xf8b4ccf7ee558224c155604a4a0b5cc35715367cda5010fb38e21d63ec5236c9",
+			"urls": [
+				"bzzr://1122441f26acb8db534b2aca2dd0190105700f3428dab3c4d46185a844f0add4"
+			]
+		},
+		"@aragon/os/contracts/evmscript/IEVMScriptExecutor.sol": {
+			"keccak256": "0x76ad18a278e36e14147f5b58a1157de67ce95f28813f3e1eacfedaaf53dd33b9",
+			"urls": [
+				"bzzr://9a89d458a5e70793b3ce7e49e02977c366eb8779d8414c5d375a61ceb6232b52"
+			]
+		},
+		"@aragon/os/contracts/evmscript/IEVMScriptRegistry.sol": {
+			"keccak256": "0x66b255ac1537765d6e79cc0ed02df004e7bf214863773901e207baafd59dc2ce",
+			"urls": [
+				"bzzr://1355e0a1cdc2fdfc5009a40920fa31e7bee0f343b29791e9239572f384283725"
+			]
+		},
+		"@aragon/os/contracts/evmscript/ScriptHelpers.sol": {
+			"keccak256": "0x2a3c77b540a4f8fdd657a4a77614b4a3675588527ce4d935684ea93e5f60a0b7",
+			"urls": [
+				"bzzr://58132bf63d9d31e032df5d0d844b62dbecf4b1591d18b0399c15144bc8b43ad5"
+			]
+		},
+		"@aragon/os/contracts/evmscript/executors/BaseEVMScriptExecutor.sol": {
+			"keccak256": "0x96b64e6c5ccd7e80171a6ae2d84dddf0a4d96225f70c5b7ce8c48bd35c3869b2",
+			"urls": [
+				"bzzr://21f90dd8dbeb32626c4b081001079b23b42a5b2150bcf15a0d5bde58aaa925e7"
+			]
+		},
+		"@aragon/os/contracts/evmscript/executors/CallsScript.sol": {
+			"keccak256": "0xc7078b505c6e458b5d4d7d47df87245b3bdb96f8c21d2b93669d6b5251456a2c",
+			"urls": [
+				"bzzr://a77cc8bc48f5c4e3345171cc6df12109c58c297323aff7d67471c9be1ae1396d"
+			]
+		},
+		"@aragon/os/contracts/factory/AppProxyFactory.sol": {
+			"keccak256": "0x94e88f4e8747be9487e32069eb22c1455ffc49cfd1299ef1eba212049c2db115",
+			"urls": [
+				"bzzr://b4e9f5de68841156d93b92e55ef031762a2a273215b19190d93cac86b1776ea4"
+			]
+		},
+		"@aragon/os/contracts/factory/DAOFactory.sol": {
+			"keccak256": "0x606c9813487fba0c479b0e5b2bc077bab428d6c24b480936c5172bfb9d5598b6",
+			"urls": [
+				"bzzr://c66f36b79057ea27f6ae43969a47d308d70342a77535a7256a393331afb8ea2c"
+			]
+		},
+		"@aragon/os/contracts/factory/EVMScriptRegistryFactory.sol": {
+			"keccak256": "0xf879b2069ae82e266b79c48bde64a6f1f051bdc5c566cf01e0cc2e8844c381a7",
+			"urls": [
+				"bzzr://a9779103ad40d8ac1a9ebd761ac640050dca9aea2ca4dc77f0cde552a62fb8f3"
+			]
+		},
+		"@aragon/os/contracts/kernel/IKernel.sol": {
+			"keccak256": "0x96e9fd607b156a96905ec0108bb4fbcc5ad85212bb98e03600069bb5727d2daa",
+			"urls": [
+				"bzzr://f38a550aa902b14515a3223620de8f7961d3ec94b37ac10632f3a1f360476bb4"
+			]
+		},
+		"@aragon/os/contracts/kernel/Kernel.sol": {
+			"keccak256": "0x117b1e169c984a4ad9070d5d7784bf91f8b1b16d3e695694cde253181b5ade3e",
+			"urls": [
+				"bzzr://1b5c68c03da122c98cdf6d36c5a26309bb0199afc9790fa5fa6c2311be46875b"
+			]
+		},
+		"@aragon/os/contracts/kernel/KernelConstants.sol": {
+			"keccak256": "0x817f66cfc7bfafd19a4e6b1344850c5f7b72e39a1073fe862efebe608a07c0d3",
+			"urls": [
+				"bzzr://0a16040bc7a9dff4e7e411c850565f11ec0ca65b5e170527a9f47c92ddbb110d"
+			]
+		},
+		"@aragon/os/contracts/kernel/KernelProxy.sol": {
+			"keccak256": "0xb60dea1ebaf0e3e634b0782ef98fdd854b3de5bb639f56c2937ca34b676940ba",
+			"urls": [
+				"bzzr://0a663339ee5ef7f84addfe2161b89b8bd974ec9666da371a0e6f66b79434f9e2"
+			]
+		},
+		"@aragon/os/contracts/kernel/KernelStorage.sol": {
+			"keccak256": "0x682eac86f7a617281098c15cadbaeec72a50cbe49101861a1454519df1718a4c",
+			"urls": [
+				"bzzr://f988478fa117c50841e0ecebb437b5bce214c3965de387e248e72f3266e86be5"
+			]
+		},
+		"@aragon/os/contracts/lib/ens/AbstractENS.sol": {
+			"keccak256": "0x8deaa274dfc550c8251576dfa0dde1e58933728ced575de4f5b12391fd358c95",
+			"urls": [
+				"bzzr://8b03da0d3461879e624d00d27d32c0e28fbb7c13d934ca3bb261225c5632aa0b"
+			]
+		},
+		"@aragon/os/contracts/lib/ens/ENS.sol": {
+			"keccak256": "0x919b4beefbead7971bfe6a2a01025919d10091fd412b4e7ffaccc8661d7e2863",
+			"urls": [
+				"bzzr://0f92b33949e37e6f8d2fb52daa108fc3c823c3fdab4db04a9231c24012900109"
+			]
+		},
+		"@aragon/os/contracts/lib/ens/PublicResolver.sol": {
+			"keccak256": "0x8c538f586fdf66528c5c6e2e916c79f00762a2fba3ec0e7be78dc0e3fda4ac2c",
+			"urls": [
+				"bzzr://b49189c02861a9bd108f64a504bc77e7c0ea681ccdd5a582c5f3a94c43c5f2c3"
+			]
+		},
+		"@aragon/os/contracts/lib/math/SafeMath.sol": {
+			"keccak256": "0x2e11c8dcead82c452ef452f4dbced40e20ae105fa4145d920dac6e077b31d846",
+			"urls": [
+				"bzzr://91dbd0e3335720d4a3d12a90682b8d9834f76e75918c1f646a84debb38089ece"
+			]
+		},
+		"@aragon/os/contracts/lib/math/SafeMath64.sol": {
+			"keccak256": "0x34f18573e7b2180645c67faaff60ebc713ab22c697606d3b3ce4fe0e745955f4",
+			"urls": [
+				"bzzr://192cb9d1b7a1fbf7e3709b1a18bccd3ee023f5b98e117246dc7ddc701e2fd9c0"
+			]
+		},
+		"@aragon/os/contracts/lib/misc/ERCProxy.sol": {
+			"keccak256": "0xa976d3230857b541c68222d1dc50d8805c598897ae959f7b2d2ab5df35d85ae2",
+			"urls": [
+				"bzzr://7d864f5fae04ca8c08c6ae1a9dbb6875c8bd892fb6ab03cdf24d404604c386fb"
+			]
+		},
+		"@aragon/os/contracts/lib/token/ERC20.sol": {
+			"keccak256": "0xa2e319fde92f9e70912f09bf6e99bbf8b9b798961d54ffcba59d347d37bde1b7",
+			"urls": [
+				"bzzr://8c9a4aec8e185884f26ffb125975bd52c2363359b9adff481649c59cfe15660f"
+			]
+		},
+		"@aragon/ppf-contracts/contracts/IFeed.sol": {
+			"keccak256": "0x707f55678685f2fb757158fc0cd986e865768bc23782d1a5691b2ec734d6845f",
+			"urls": [
+				"bzzr://3a2d96333f3cf50062e9af2e6974524b586afd7e3837d927356ceb8c05174416"
+			]
+		},
+		"@aragon/templates-shared/contracts/BaseTemplate.sol": {
+			"keccak256": "0x32646b1fda277dce031b9d2531561da31e0f056f8ef4eba1ccc6c8e6c25278c6",
+			"urls": [
+				"bzzr://7d5cc46a217670467393d8ba2401e32ce1e9eebe435cf1df846acc2e03992374"
+			]
+		},
+		"contracts/BareTemplate.sol": {
+			"keccak256": "0x7011824834f1f4f780d7ac7750fae17a99eb5e43e4b43b5ff410abc4c620c8a9",
+			"urls": [
+				"bzzr://a41512e267a8254a2db9dd6a60c7836f4d76241a65cc96d95c3e25858b9132db"
+			]
+		}
+	},
+	"version": 1
+}

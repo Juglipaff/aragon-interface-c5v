@@ -1,0 +1,177 @@
+{
+	"deploy": {
+		"VM:-": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"main:1": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"ropsten:3": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"rinkeby:4": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"kovan:42": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"görli:5": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		},
+		"Custom": {
+			"linkReferences": {},
+			"autoDeployLib": true
+		}
+	},
+	"data": {
+		"bytecode": {
+			"linkReferences": {},
+			"object": "608060405234801561001057600080fd5b50604051608080610293833981016040908152815160208301519183015160609093015190929061004983640100000000610223810204565b60408051808201909152601981527f54454d504c4154455f454e535f4e4f545f434f4e5452414354000000000000006020820152901515610122576040517f08c379a00000000000000000000000000000000000000000000000000000000081526004018080602001828103825283818151815260200191508051906020019080838360005b838110156100e75781810151838201526020016100cf565b50505050905090810190601f1680156101145780820380516001836020036101000a031916815260200191505b509250505060405180910390fd5b5061013584640100000000610223810204565b60408051808201909152601d81527f54454d504c4154455f44414f5f4641435f4e4f545f434f4e545241435400000060208201529015156101d2576040517f08c379a0000000000000000000000000000000000000000000000000000000008152600401808060200182810382528381815181526020019150805190602001908083836000838110156100e75781810151838201526020016100cf565b5060008054600160a060020a0319908116600160a060020a03958616179091556003805482169285169290921790915560018054821694841694909417909355600280549093169116179055610250565b600080600160a060020a038316151561023f576000915061024a565b823b90506000811191505b50919050565b60358061025e6000396000f3006080604052600080fd00a165627a7a723058200aa47cd290aa24993778b2def86ae7b884d5194564af353881a5be8b0fe1eb160029",
+			"opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE CALLVALUE DUP1 ISZERO PUSH2 0x10 JUMPI PUSH1 0x0 DUP1 REVERT JUMPDEST POP PUSH1 0x40 MLOAD PUSH1 0x80 DUP1 PUSH2 0x293 DUP4 CODECOPY DUP2 ADD PUSH1 0x40 SWAP1 DUP2 MSTORE DUP2 MLOAD PUSH1 0x20 DUP4 ADD MLOAD SWAP2 DUP4 ADD MLOAD PUSH1 0x60 SWAP1 SWAP4 ADD MLOAD SWAP1 SWAP3 SWAP1 PUSH2 0x49 DUP4 PUSH5 0x100000000 PUSH2 0x223 DUP2 MUL DIV JUMP JUMPDEST PUSH1 0x40 DUP1 MLOAD DUP1 DUP3 ADD SWAP1 SWAP2 MSTORE PUSH1 0x19 DUP2 MSTORE PUSH32 0x54454D504C4154455F454E535F4E4F545F434F4E545241435400000000000000 PUSH1 0x20 DUP3 ADD MSTORE SWAP1 ISZERO ISZERO PUSH2 0x122 JUMPI PUSH1 0x40 MLOAD PUSH32 0x8C379A000000000000000000000000000000000000000000000000000000000 DUP2 MSTORE PUSH1 0x4 ADD DUP1 DUP1 PUSH1 0x20 ADD DUP3 DUP2 SUB DUP3 MSTORE DUP4 DUP2 DUP2 MLOAD DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP DUP1 MLOAD SWAP1 PUSH1 0x20 ADD SWAP1 DUP1 DUP4 DUP4 PUSH1 0x0 JUMPDEST DUP4 DUP2 LT ISZERO PUSH2 0xE7 JUMPI DUP2 DUP2 ADD MLOAD DUP4 DUP3 ADD MSTORE PUSH1 0x20 ADD PUSH2 0xCF JUMP JUMPDEST POP POP POP POP SWAP1 POP SWAP1 DUP2 ADD SWAP1 PUSH1 0x1F AND DUP1 ISZERO PUSH2 0x114 JUMPI DUP1 DUP3 SUB DUP1 MLOAD PUSH1 0x1 DUP4 PUSH1 0x20 SUB PUSH2 0x100 EXP SUB NOT AND DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP JUMPDEST POP SWAP3 POP POP POP PUSH1 0x40 MLOAD DUP1 SWAP2 SUB SWAP1 REVERT JUMPDEST POP PUSH2 0x135 DUP5 PUSH5 0x100000000 PUSH2 0x223 DUP2 MUL DIV JUMP JUMPDEST PUSH1 0x40 DUP1 MLOAD DUP1 DUP3 ADD SWAP1 SWAP2 MSTORE PUSH1 0x1D DUP2 MSTORE PUSH32 0x54454D504C4154455F44414F5F4641435F4E4F545F434F4E5452414354000000 PUSH1 0x20 DUP3 ADD MSTORE SWAP1 ISZERO ISZERO PUSH2 0x1D2 JUMPI PUSH1 0x40 MLOAD PUSH32 0x8C379A000000000000000000000000000000000000000000000000000000000 DUP2 MSTORE PUSH1 0x4 ADD DUP1 DUP1 PUSH1 0x20 ADD DUP3 DUP2 SUB DUP3 MSTORE DUP4 DUP2 DUP2 MLOAD DUP2 MSTORE PUSH1 0x20 ADD SWAP2 POP DUP1 MLOAD SWAP1 PUSH1 0x20 ADD SWAP1 DUP1 DUP4 DUP4 PUSH1 0x0 DUP4 DUP2 LT ISZERO PUSH2 0xE7 JUMPI DUP2 DUP2 ADD MLOAD DUP4 DUP3 ADD MSTORE PUSH1 0x20 ADD PUSH2 0xCF JUMP JUMPDEST POP PUSH1 0x0 DUP1 SLOAD PUSH1 0x1 PUSH1 0xA0 PUSH1 0x2 EXP SUB NOT SWAP1 DUP2 AND PUSH1 0x1 PUSH1 0xA0 PUSH1 0x2 EXP SUB SWAP6 DUP7 AND OR SWAP1 SWAP2 SSTORE PUSH1 0x3 DUP1 SLOAD DUP3 AND SWAP3 DUP6 AND SWAP3 SWAP1 SWAP3 OR SWAP1 SWAP2 SSTORE PUSH1 0x1 DUP1 SLOAD DUP3 AND SWAP5 DUP5 AND SWAP5 SWAP1 SWAP5 OR SWAP1 SWAP4 SSTORE PUSH1 0x2 DUP1 SLOAD SWAP1 SWAP4 AND SWAP2 AND OR SWAP1 SSTORE PUSH2 0x250 JUMP JUMPDEST PUSH1 0x0 DUP1 PUSH1 0x1 PUSH1 0xA0 PUSH1 0x2 EXP SUB DUP4 AND ISZERO ISZERO PUSH2 0x23F JUMPI PUSH1 0x0 SWAP2 POP PUSH2 0x24A JUMP JUMPDEST DUP3 EXTCODESIZE SWAP1 POP PUSH1 0x0 DUP2 GT SWAP2 POP JUMPDEST POP SWAP2 SWAP1 POP JUMP JUMPDEST PUSH1 0x35 DUP1 PUSH2 0x25E PUSH1 0x0 CODECOPY PUSH1 0x0 RETURN STOP PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 EXP LOG4 PUSH29 0xD290AA24993778B2DEF86AE7B884D5194564AF353881A5BE8B0FE1EB16 STOP 0x29 ",
+			"sourceMap": "976:18432:0:-;;;3748:406;8:9:-1;5:2;;;30:1;27;20:12;5:2;3748:406:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;3889:25;3748:406;3889:10;;;;:25;:::i;:::-;3916:22;;;;;;;;;;;;;;;;;;3881:58;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;8:100;33:3;30:1;27:10;8:100;;;90:11;;;84:18;71:11;;;64:39;52:2;45:10;8:100;;;12:14;3881:58:0;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;-1:-1:-1;3957:32:0;3976:11;3957:10;;;;:32;:::i;:::-;3991:30;;;;;;;;;;;;;;;;;;3949:73;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;23:1:-1;33:3;30:1;27:10;8:100;;;90:11;;;84:18;71:11;;;64:39;52:2;45:10;8:100;;3949:73:0;-1:-1:-1;4033:3:0;:10;;-1:-1:-1;;;;;;4033:10:0;;;-1:-1:-1;;;;;4033:10:0;;;;;;;4053:8;:20;;;;;;;;;;;;;;-1:-1:-1;4083:24:0;;;;;;;;;;;;;;-1:-1:-1;4117:30:0;;;;;;;;;;976:18432;;425:244:36;485:4;;-1:-1:-1;;;;;505:21:36;;;501:64;;;549:5;542:12;;;;501:64;628:7;616:20;608:28;;661:1;654:4;:8;647:15;;425:244;;;;;:::o;976:18432:0:-;;;;;;;"
+		},
+		"deployedBytecode": {
+			"linkReferences": {},
+			"object": "6080604052600080fd00a165627a7a723058200aa47cd290aa24993778b2def86ae7b884d5194564af353881a5be8b0fe1eb160029",
+			"opcodes": "PUSH1 0x80 PUSH1 0x40 MSTORE PUSH1 0x0 DUP1 REVERT STOP LOG1 PUSH6 0x627A7A723058 KECCAK256 EXP LOG4 PUSH29 0xD290AA24993778B2DEF86AE7B884D5194564AF353881A5BE8B0FE1EB16 STOP 0x29 ",
+			"sourceMap": "976:18432:0:-;;;;;"
+		},
+		"gasEstimates": {
+			"creation": {
+				"codeDepositCost": "10600",
+				"executionCost": "infinite",
+				"totalCost": "infinite"
+			},
+			"internal": {
+				"_createAgentPermissions(contract ACL,contract Agent,address,address)": "infinite",
+				"_createDAO()": "infinite",
+				"_createEvmScriptsRegistryPermissions(contract ACL,address,address)": "infinite",
+				"_createFinanceCreatePaymentsPermission(contract ACL,contract Finance,address,address)": "infinite",
+				"_createFinancePermissions(contract ACL,contract Finance,address,address)": "infinite",
+				"_createPayrollPermissions(contract ACL,contract Payroll,address,address,address)": "infinite",
+				"_createPermissionForTemplate(contract ACL,address,bytes32)": "infinite",
+				"_createPermissions(contract ACL,address[] memory,address,bytes32,address)": "infinite",
+				"_createSurveyPermissions(contract ACL,contract Survey,address,address)": "infinite",
+				"_createToken(string memory,string memory,uint8)": "infinite",
+				"_createTokenManagerPermissions(contract ACL,contract TokenManager,address,address)": "infinite",
+				"_createVaultPermissions(contract ACL,contract Vault,address,address)": "infinite",
+				"_createVotingPermissions(contract ACL,contract Voting,address,address,address)": "infinite",
+				"_ensureAragonIdIsValid(address)": "infinite",
+				"_ensureMiniMeFactoryIsValid(address)": "infinite",
+				"_grantCreatePaymentPermission(contract ACL,contract Finance,address)": "infinite",
+				"_installApp(contract Kernel,bytes32,bytes memory,bool)": "infinite",
+				"_installDefaultAgentApp(contract Kernel)": "infinite",
+				"_installDefaultApp(contract Kernel,bytes32)": "infinite",
+				"_installDefaultApp(contract Kernel,bytes32,bytes memory)": "infinite",
+				"_installFinanceApp(contract Kernel,contract Vault,uint64)": "infinite",
+				"_installNonDefaultAgentApp(contract Kernel)": "infinite",
+				"_installNonDefaultApp(contract Kernel,bytes32)": "infinite",
+				"_installNonDefaultApp(contract Kernel,bytes32,bytes memory)": "infinite",
+				"_installPayrollApp(contract Kernel,contract Finance,address,contract IFeed,uint64)": "infinite",
+				"_installSurveyApp(contract Kernel,contract MiniMeToken,uint64,uint64)": "infinite",
+				"_installTokenManagerApp(contract Kernel,contract MiniMeToken,bool,uint256)": "infinite",
+				"_installVaultApp(contract Kernel)": "infinite",
+				"_installVotingApp(contract Kernel,contract MiniMeToken,uint64,uint64,uint64)": "infinite",
+				"_installVotingApp(contract Kernel,contract MiniMeToken,uint64[3] memory)": "infinite",
+				"_latestVersionAppBase(bytes32)": "infinite",
+				"_mintTokens(contract ACL,contract TokenManager,address,uint256)": "infinite",
+				"_mintTokens(contract ACL,contract TokenManager,address[] memory,uint256)": "infinite",
+				"_mintTokens(contract ACL,contract TokenManager,address[] memory,uint256[] memory)": "infinite",
+				"_registerID(string memory,address)": "infinite",
+				"_removePermissionFromTemplate(contract ACL,address,bytes32)": "infinite",
+				"_toAddress(uint256)": "infinite",
+				"_transferCreatePaymentManagerFromTemplate(contract ACL,contract Finance,address)": "infinite",
+				"_transferPermissionFromTemplate(contract ACL,address,address,bytes32,address)": "infinite",
+				"_transferRootPermissionsFromTemplateAndFinalizeDAO(contract Kernel,address)": "infinite",
+				"_transferRootPermissionsFromTemplateAndFinalizeDAO(contract Kernel,address,address)": "infinite",
+				"_unwrapPayrollSettings(uint256[4] memory)": "infinite",
+				"_validateId(string memory)": "infinite"
+			}
+		},
+		"methodIdentifiers": {}
+	},
+	"abi": [
+		{
+			"inputs": [
+				{
+					"name": "_daoFactory",
+					"type": "address"
+				},
+				{
+					"name": "_ens",
+					"type": "address"
+				},
+				{
+					"name": "_miniMeFactory",
+					"type": "address"
+				},
+				{
+					"name": "_aragonID",
+					"type": "address"
+				}
+			],
+			"payable": false,
+			"stateMutability": "nonpayable",
+			"type": "constructor"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"name": "dao",
+					"type": "address"
+				}
+			],
+			"name": "DeployDao",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"name": "dao",
+					"type": "address"
+				}
+			],
+			"name": "SetupDao",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"name": "token",
+					"type": "address"
+				}
+			],
+			"name": "DeployToken",
+			"type": "event"
+		},
+		{
+			"anonymous": false,
+			"inputs": [
+				{
+					"indexed": false,
+					"name": "appProxy",
+					"type": "address"
+				},
+				{
+					"indexed": false,
+					"name": "appId",
+					"type": "bytes32"
+				}
+			],
+			"name": "InstalledApp",
+			"type": "event"
+		}
+	]
+}

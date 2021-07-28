@@ -1,0 +1,98 @@
+{
+	"compiler": {
+		"version": "0.4.24+commit.e67f0147"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_parentToken",
+						"type": "address"
+					},
+					{
+						"name": "_snapshotBlock",
+						"type": "uint256"
+					},
+					{
+						"name": "_tokenName",
+						"type": "string"
+					},
+					{
+						"name": "_decimalUnits",
+						"type": "uint8"
+					},
+					{
+						"name": "_tokenSymbol",
+						"type": "string"
+					},
+					{
+						"name": "_transfersEnabled",
+						"type": "bool"
+					}
+				],
+				"name": "createCloneToken",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			}
+		],
+		"devdoc": {
+			"methods": {
+				"createCloneToken(address,uint256,string,uint8,string,bool)": {
+					"params": {
+						"_decimalUnits": "Number of decimals of the new token",
+						"_parentToken": "Address of the token being cloned",
+						"_snapshotBlock": "Block of the parent token that will  determine the initial distribution of the clone token",
+						"_tokenName": "Name of the new token",
+						"_tokenSymbol": "Token Symbol for the new token",
+						"_transfersEnabled": "If true, tokens will be able to be transferred"
+					},
+					"return": "The address of the new token contract"
+				}
+			}
+		},
+		"userdoc": {
+			"methods": {
+				"createCloneToken(address,uint256,string,uint8,string,bool)": {
+					"notice": "Update the DApp by creating a new token with new functionalities  the msg.sender becomes the controller of this clone token"
+				}
+			}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"/.deps/npm/@aragon/apps-shared-minime/contracts/MiniMeToken.sol": "MiniMeTokenFactory"
+		},
+		"evmVersion": "byzantium",
+		"libraries": {},
+		"optimizer": {
+			"enabled": true,
+			"runs": 20000
+		},
+		"remappings": []
+	},
+	"sources": {
+		"/.deps/npm/@aragon/apps-shared-minime/contracts/ITokenController.sol": {
+			"keccak256": "0x030d1ea5543fd23d3c962cbf34b1c3b6e15d9bbfb711416e1cf4160c3bcdccaa",
+			"urls": [
+				"bzzr://64ccd0852c1b90d55248f9b56898854c32bd881a9eb61637d6ecb7430a77764c"
+			]
+		},
+		"/.deps/npm/@aragon/apps-shared-minime/contracts/MiniMeToken.sol": {
+			"keccak256": "0xdd0f6c4ad5316758428e6c3a87eb59651d51c4c828f5aa0c34d243c924244f7d",
+			"urls": [
+				"bzzr://150c21a6b2fcbd9d68a8d46659b2b454034c79777dae282fe7bfcb6c7dc01030"
+			]
+		}
+	},
+	"version": 1
+}

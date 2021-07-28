@@ -1,0 +1,36 @@
+{
+	"compiler": {
+		"version": "0.4.24+commit.e67f0147"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [],
+		"devdoc": {
+			"methods": {}
+		},
+		"userdoc": {
+			"methods": {}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			".deps/npm/@aragon/os/contracts/apm/APMNamehash.sol": "APMNamehash"
+		},
+		"evmVersion": "byzantium",
+		"libraries": {},
+		"optimizer": {
+			"enabled": true,
+			"runs": 20000
+		},
+		"remappings": []
+	},
+	"sources": {
+		".deps/npm/@aragon/os/contracts/apm/APMNamehash.sol": {
+			"keccak256": "0x8af7350d0193d35069b3d64c276ea446b0ed1503c57bfcd828a1fd92cb7257a8",
+			"urls": [
+				"bzzr://a57fdb94d0e9123b106203b8e30babbc89692bb73fc0e37707427382860bdc3a"
+			]
+		}
+	},
+	"version": 1
+}

@@ -1,0 +1,153 @@
+{
+	"compiler": {
+		"version": "0.4.24+commit.e67f0147"
+	},
+	"language": "Solidity",
+	"output": {
+		"abi": [
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_subnode",
+						"type": "bytes32"
+					},
+					{
+						"name": "_owner",
+						"type": "address"
+					}
+				],
+				"name": "register",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_subnode",
+						"type": "bytes32"
+					},
+					{
+						"name": "_owner",
+						"type": "address"
+					},
+					{
+						"name": "_resolver",
+						"type": "address"
+					}
+				],
+				"name": "registerWithResolver",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "rootNode",
+				"outputs": [
+					{
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"inputs": [
+					{
+						"name": "_ensAddr",
+						"type": "address"
+					},
+					{
+						"name": "_defaultResolver",
+						"type": "address"
+					},
+					{
+						"name": "_node",
+						"type": "bytes32"
+					}
+				],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "constructor"
+			},
+			{
+				"anonymous": false,
+				"inputs": [
+					{
+						"indexed": true,
+						"name": "subnode",
+						"type": "bytes32"
+					},
+					{
+						"indexed": true,
+						"name": "owner",
+						"type": "address"
+					},
+					{
+						"indexed": true,
+						"name": "resolver",
+						"type": "address"
+					}
+				],
+				"name": "ClaimSubdomain",
+				"type": "event"
+			}
+		],
+		"devdoc": {
+			"methods": {
+				"register(bytes32,address)": {
+					"params": {
+						"_owner": "The address of the new owner.\r",
+						"_subnode": "The hash of the label to register.\r"
+					}
+				},
+				"registerWithResolver(bytes32,address,address)": {
+					"params": {
+						"_owner": "The address of the new owner.\r",
+						"_resolver": "The address of the resolver.\r                 If the resolver supports the address interface, the subdomain's address will\r                 be set to the new owner.\r",
+						"_subnode": "The hash of the label to register.\r"
+					}
+				}
+			}
+		},
+		"userdoc": {
+			"methods": {
+				"register(bytes32,address)": {
+					"notice": "Register a subdomain with the default resolver if it hasn't been claimed yet.\r"
+				},
+				"registerWithResolver(bytes32,address,address)": {
+					"notice": "Register a subdomain if it hasn't been claimed yet.\r"
+				}
+			}
+		}
+	},
+	"settings": {
+		"compilationTarget": {
+			"contracts/FIFSResolvingRegistrar.sol": "FIFSResolvingRegistrar"
+		},
+		"evmVersion": "byzantium",
+		"libraries": {},
+		"optimizer": {
+			"enabled": true,
+			"runs": 20000
+		},
+		"remappings": []
+	},
+	"sources": {
+		"contracts/FIFSResolvingRegistrar.sol": {
+			"keccak256": "0xeaa235f7265c70b8b84af30027d5e6f4669042d30f75a23a8fb762e3c92b8e70",
+			"urls": [
+				"bzzr://97e0f5cc24ac708db0ca477e3862305ab8b66262c4f75243a4b5b3208a109427"
+			]
+		}
+	},
+	"version": 1
+}
