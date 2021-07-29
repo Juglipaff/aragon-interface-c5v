@@ -281,7 +281,10 @@ export default {
       if (this.errors.length > 3) {
         this.errors.splice(0, 1)
       }
-      setTimeout(() => { this.errors.splice(this.errors.indexOf(item), 1) }, 7000)
+      setTimeout(() => {
+        const index = this.errors.findIndex((a) => { return a.key === item.key })
+        if (index !== -1) { this.errors.splice(this.errors.findIndex((a) => { return a.key === item.key }), 1) }
+      }, 7000)
     },
     showSettings () {
       this.showSettingsModal = !this.showSettingsModal
@@ -566,7 +569,7 @@ export default {
 }
 .error{
   display: inline-block;
-  transition:0.5s;
+  transition:0.3s;
   position:relative;
   bottom: 0;
   width:100vw;
@@ -839,10 +842,11 @@ export default {
 }
 
 .errorTransition-enter-active, .errorTransition-leave-active {
-  transition: all .5s;
+  transition: all .3s;
 }
 .errorTransition-enter, .errorTransition-leave-to  {
  /* bottom:-60px;*/
+ opacity:0;
   transform: translateY(60px);
 }
 
