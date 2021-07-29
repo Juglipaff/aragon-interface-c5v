@@ -39,12 +39,12 @@
 
         </div>
         <div class="padding"></div>
-        <div v-if="hasPermission" class="createVote">Create Proposal</div>
+        <div v-if="hasPermission" class="createProposal">Create Proposal</div>
           <div v-if="hasPermission" class="top-row">
             <div class="questionInput">
               <div class="question-title">Question</div>
               <input class="inputQuestion" v-model="question">
-              <button class="submit" :disabled="question===''||currentAccount.length===0 ||loadingCreate||!rightChainId" v-on:click="createVote(question)">
+              <button class="submit" :disabled="currentAccount.length===0 ||loadingCreate||!rightChainId" v-on:click="createProposal(question)">
                 <div  v-if="loadingCreate"  class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 <span v-else>Create Proposal</span>
               </button>
@@ -70,12 +70,13 @@
               </div>
             </div>
           </div>
-          <div class="createVote">Open Proposals - {{openVotes.length}}</div>
+          <div class="createProposal">Open Proposals - {{openProposals.length}}</div>
           <div class="wrapper">
             <QUESTION
-              v-for="entry in openVotes"
+              v-for="entry in openProposals"
               :key="entry.id"
               @update="update"
+               @error="addError"
               :votingContract="votingContract"
               :question="entry"
               :votingAddress="votingAddress"
@@ -87,13 +88,14 @@
               />
             </div>
 
-          <div v-if="isAdmin" class="createVote">Token Holders</div>
+          <div v-if="isAdmin" class="createProposal">Token Holders</div>
             <div v-if="isAdmin" class="tokenHolders">
               <div class="holderHeader">Holder</div>
               <HOLDER
                 v-for="holder in holders"
                 :key="holder.address"
                 @update="update"
+                @error="addError"
                 :isAdmin="isAdmin"
                 :managerContract="managerContract"
                 :provider="provider"
@@ -103,19 +105,20 @@
               />
               <div class="holder">
                 <input class="inputHolder" placeholder="Address" v-model="newAddress">
-                <button class="submitHolder" :disabled="!hasPermission||newAddress===''||currentAccount.length===0||loadingMint||!rightChainId" v-on:click="mint(newAddress)">
+                <button class="submitHolder" :disabled="!hasPermission||currentAccount.length===0||loadingMint||!rightChainId" v-on:click="mint(newAddress)">
                   <span v-if="!loadingMint">Add Participant</span>
                   <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 </button>
               </div>
             </div>
 
-          <div class="createVote">Closed Proposals - {{closedVotes.length}}</div>
+          <div class="createProposal">Closed Proposals - {{closedProposals.length}}</div>
             <div class="wrapper">
               <QUESTION
-                v-for="entry in closedVotes"
+                v-for="entry in closedProposals"
                 :key="entry.id"
                 @update="update"
+                 @error="addError"
                 :votingContract="votingContract"
                 :question="entry"
                 :votingAddress="votingAddress"
@@ -131,6 +134,15 @@
         <div class="loading-text"><div class="lds-default"><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div><div class="text"></div></div>
     </div>
     </transition>
+     <!-- v-if="errors.length > 0 && errors[errors.length - 1]||true" -->
+     <div class="errorContainer">
+      <transition-group name="errorTransition" >
+        <div v-for="(error,index) in errors" class="error" :key="error.key">
+          {{error.item}}
+          <font-awesome-icon class="closeErrors" v-on:click="errors.splice(index, 1)" :icon="['fas', 'times']" />
+        </div>
+      </transition-group>
+    </div>
   </div>
 </template>
 
@@ -168,12 +180,11 @@ export default {
 
       provider: null,
       voting: null,
-      votes: [],
       question: '',
       tokens: null,
       token: {},
-      openVotes: [],
-      closedVotes: [],
+      openProposals: [],
+      closedProposals: [],
       loadingCreate: false,
       loadingMint: false,
       loadingSupport: false,
@@ -197,7 +208,8 @@ export default {
       userPosition: null,
       showSettingsModal: false,
       file: null,
-      fileUploading: false
+      fileUploading: false,
+      errors: []
     }
   },
   computed: {
@@ -223,7 +235,11 @@ export default {
         this.update()
       })
       this.provider = new ethers.providers.Web3Provider(window.ethereum)
-      const providerChainId = (await this.provider.getNetwork()).chainId
+      try {
+        var providerChainId = (await this.provider.getNetwork()).chainId
+      } catch (err) {
+        this.addError("Can't fetch network chainId. Please check your wallet network settings")
+      }
       this.rightChainId = providerChainId === this.chainId
 
       if (!this.rightChainId) {
@@ -242,10 +258,14 @@ export default {
     this.ACLContract = new ethers.Contract(this.ACLAddress, aclABI, this.provider)
     this.managerContract = new ethers.Contract(this.managerAddress, managerABI, this.provider)
 
-    this.token.name = await this.tokenContract.name()
-    this.token.symbol = await this.tokenContract.symbol()
-    this.token.transferable = await this.tokenContract.transfersEnabled()
-    this.manager = await this.managerContract.manager()
+    try {
+      this.token.name = await this.tokenContract.name()
+      this.token.symbol = await this.tokenContract.symbol()
+      this.token.transferable = await this.tokenContract.transfersEnabled()
+      this.manager = await this.managerContract.manager()
+    } catch (err) {
+      this.addError("Can't fetch token info. Please try again later")
+    }
 
     // Initialize IPFS interface
     this.ipfs = new IPFS({ host: 'ipfs.infura.io', port: 5001, protocol: 'https' })
@@ -255,6 +275,14 @@ export default {
   },
 
   methods: {
+    addError (elem) {
+      const item = { item: elem, key: Math.random() }
+      this.errors.push(item)
+      if (this.errors.length > 3) {
+        this.errors.splice(0, 1)
+      }
+      setTimeout(() => { this.errors.splice(this.errors.indexOf(item), 1) }, 7000)
+    },
     showSettings () {
       this.showSettingsModal = !this.showSettingsModal
     },
@@ -293,50 +321,39 @@ export default {
         const fileTypes = ['pdf'] // ['jpg', 'jpeg', 'png', 'txt', 'pdf', 'mp3', 'mp4', 'webm']
         const extension = file.name.split('.').pop().toLowerCase()
         if (!fileTypes.includes(extension)) {
+          this.$refs.file.value = null
           this.fileUploading = false
+          this.addError('The file must have .PDF extension.')
           return
-        }
-        const fileType = (extension) => {
-          if (extension === 'jpg' || extension === 'jpeg' || extension === 'png') {
-            return '0x00000002'
-          }
-          if (extension === 'mp3') {
-            return '0x00000003'
-          }
-          if (extension === 'mp4' || extension === 'webm') {
-            return '0x00000004'
-          }
-          if (extension === 'txt') {
-            return '0x00000005'
-          }
-          if (extension === 'pdf') {
-            return '0x00000006'
-          }
         }
         const reader = new window.FileReader()
         reader.readAsArrayBuffer(file)
         reader.onloadend = async () => {
-          const buffer = await Buffer.from(reader.result)
-          await this.ipfs.add(buffer).then(result => {
-            console.log(result)
-            this.file = { url: this.ipfsUrl + result[0].path, script: fileType(extension) }
-            console.log(this.file)
-            this.createVote('')
-          })
+          try {
+            const buffer = await Buffer.from(reader.result)
+            const result = await this.ipfs.add(buffer)
+            this.file = { url: this.ipfsUrl + result[0].path, script: '0x00000006' }
+            this.createProposal('')
+          } catch (err) {
+            this.addError("The file wasn't uploaded because of the IPFS error. Please try again later.")
+          }
           this.fileUploading = false
+          this.$refs.file.value = null
         }
         return
       }
       this.file = null
     },
 
-    async createVote (question) {
+    async createProposal (question) {
       try {
         var args
         if (this.file) {
           args = [this.file.script, this.file.url]
         } else if (question !== '') {
           args = ['0x00000001', question]
+        } else {
+          this.addError('Please enter a proposal or upload a file.')
         }
 
         if (args) {
@@ -353,6 +370,7 @@ export default {
           await this.waitForTransaction(tx)
         }
       } catch (err) {
+        this.addError("The transaction wasn't sent.")
         console.log(err)
       }
       this.question = ''
@@ -371,8 +389,11 @@ export default {
             }
           )
           await this.waitForTransaction(tx)
+        } else {
+          this.addError('Please enter a valid address.')
         }
       } catch (err) {
+        this.addError('The transaction was rejected.')
         console.log(err)
       }// else show error
       this.loadingMint = false
@@ -397,8 +418,11 @@ export default {
             }
           )
           await this.waitForTransaction(tx)
+        } else {
+          this.addError('Please enter a valid value. (value >= 0 & value <= 100)')
         }
       } catch (err) {
+        this.addError('The transaction was rejected.')
         console.log(err)
       }
       this.loadingQuorum = false
@@ -423,10 +447,11 @@ export default {
             }
           )
           await this.waitForTransaction(tx)
-          // const intent = this.organisation.appIntent(this.voting.address, 'changeSupportRequiredPct', [value])
-          // await this.waitForTransaction(intent)
+        } else {
+          this.addError('Please enter a valid value. (value >= 0 & value <= 100)')
         }
       } catch (err) {
+        this.addError('The transaction was rejected.')
         console.log(err)
       }
       this.loadingSupport = false
@@ -436,6 +461,7 @@ export default {
       try {
         var tx = await transaction.wait()
       } catch (err) {
+        this.addError('The transaction was rejected.')
         console.log(err)
       }
       await this.update()
@@ -493,26 +519,28 @@ export default {
         this.supportRequiredPct = parseInt(ethers.utils.formatEther(await this.votingContract.supportRequiredPct()) * 100)
 
         const votesLength = await this.votingContract.votesLength()
-        this.votes = []
+
+        let votes = []
         for (let i = 0; i < votesLength; i++) {
-          this.votes.push(await this.votingContract.getVote(i))
+          votes.push(await this.votingContract.getVote(i))
         }
-        this.votes = this.votes.map((item, index) => ({
+        votes = votes.map((item, index) => ({
           ...item,
           id: index
         }))
 
-        this.votes = this.votes.sort((a, b) => {
+        votes = votes.sort((a, b) => {
           return a.startDate > b.startDate ? -1 : 1
         })
-        this.openVotes = this.votes.filter((a) => {
+        this.openProposals = votes.filter((a) => {
           return a.executed === false && a.startDate - Math.floor(Date.now() / 1000) + 86400 > 0
         })
-        this.closedVotes = this.votes.filter((a) => {
+        this.closedProposals = votes.filter((a) => {
           return a.executed === true || a.startDate - Math.floor(Date.now() / 1000) + 86400 < 0
         })
         this.updateList = !this.updateList
       } catch (err) {
+        this.addError('An error occured while fetching the data. Please try again later')
         console.log(err)
       }
       return true
@@ -521,6 +549,34 @@ export default {
 }
 </script>
 <style scoped>
+.closeErrors{
+  transition:0.1s;
+  position:absolute;
+  right:40px;
+}
+.closeErrors:hover{
+  color:rgb(255, 202, 202);
+}
+.errorContainer{
+  position:fixed;
+  width:100vw;
+  bottom:0;
+  right:0;
+  left:0
+}
+.error{
+  display: inline-block;
+  transition:0.5s;
+  position:relative;
+  bottom: 0;
+  width:100vw;
+  background-color:rgb(255, 116, 116);
+  color:white;
+  padding-top:20px;
+  padding-bottom:60px;
+  border-top:1px solid rgb(255, 154, 154);
+  margin-bottom:-40px;
+}
 .fileTypes{
   margin-left:30px;
   height:0px;
@@ -781,6 +837,15 @@ export default {
   position:absolute;
   margin-top:-55px;
 }
+
+.errorTransition-enter-active, .errorTransition-leave-active {
+  transition: all .5s;
+}
+.errorTransition-enter, .errorTransition-leave-to  {
+ /* bottom:-60px;*/
+  transform: translateY(60px);
+}
+
 .fade-enter-active, .fade-leave-active {
   transition: opacity .5s;
 }
@@ -881,7 +946,7 @@ button{
   cursor: default;
   background-color:rgb(196, 196, 196);
 }
-.createVote{
+.createProposal{
   margin-top:40px;
   margin-bottom:20px;
   font-size:30px;

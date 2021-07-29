@@ -107,23 +107,7 @@ export default {
       if (!this.expired && !this.question.executed) {
         this.getBarValues()
         if (this.currentAccount) {
-          this.votingContract.getVoterState(this.question.id, this.currentAccount)
-            .then(res => {
-              if (res === 0) {
-                this.votedNo = false
-                this.votedYes = false
-              } else if (res === 1) {
-                this.votedNo = false
-                this.votedYes = true
-              } else if (res === 2) {
-                this.votedNo = true
-                this.votedYes = false
-              }
-            })
-          this.votingContract.canVote(this.question.id, this.currentAccount)
-            .then(res => {
-              this.canVote = res
-            })
+          this.getVoteInfo(this.question.id, this.currentAccount)
         }
       }
     }
@@ -141,28 +125,35 @@ export default {
     this.startingExpireValue = this.expire
     this.intervalId = setInterval(() => { this.toHHMMSS(this.question.startDate - Math.floor(Date.now() / 1000) + 86400) }, 1000)
     if (this.currentAccount) {
-      this.votingContract.getVoterState(this.question.id, this.currentAccount)
-        .then(res => {
-          if (res === 0) {
-            this.votedNo = false
-            this.votedYes = false
-          } else if (res === 1) {
-            this.votedNo = false
-            this.votedYes = true
-          } else if (res === 2) {
-            this.votedNo = true
-            this.votedYes = false
-          }
-        })
-      this.votingContract.canVote(this.question.id, this.currentAccount)
-        .then(res => {
-          this.canVote = res
-        })
+      this.getVoteInfo(this.question.id, this.currentAccount)
     }
   },
   // :src="`https://docs.google.com/gview?embedded=true&url=${question.metadata}&amp;embedded=true`"
   methods: {
-
+    getVoteInfo (id, account) {
+      try {
+        this.votingContract.getVoterState(id, account)
+          .then(res => {
+            if (res === 0) {
+              this.votedNo = false
+              this.votedYes = false
+            } else if (res === 1) {
+              this.votedNo = false
+              this.votedYes = true
+            } else if (res === 2) {
+              this.votedNo = true
+              this.votedYes = false
+            }
+          })
+        this.votingContract.canVote(id, account)
+          .then(res => {
+            this.canVote = res
+          })
+      } catch (err) {
+        this.$emit('error', 'An error occured while fetching the data. Please try again later')
+        console.log(err)
+      }
+    },
     async getMessage () {
       if (this.question.script === '0x00000001') {
         this.questionTitle = this.question.metadata
@@ -204,6 +195,7 @@ export default {
         )
         await tx.wait()
       } catch (err) {
+        this.$emit('error', 'The transaction was rejected.')
         console.log(err)
       }
       this.loading = false

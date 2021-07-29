@@ -21,11 +21,6 @@ module.exports = {
 } */
 
 module.exports = {
-  css: {
-    extract: {
-      ignoreOrder: true
-    }
-  },
   configureWebpack: {
     module: {
       rules: [

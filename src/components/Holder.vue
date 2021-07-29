@@ -87,10 +87,13 @@ export default {
           await tx.wait()
         } catch (err) {
           console.log(err)
+          this.$emit('error', 'The transaction was rejected.')
         }// else show error
-        this.loadingPosition = false
         this.$emit('update')
+      } else {
+        this.$emit('error', 'Please enter a position.')
       }
+      this.loadingPosition = false
     },
     async assignName (address, name) {
       if (name !== '') {
@@ -106,10 +109,13 @@ export default {
           await tx.wait()
         } catch (err) {
           console.log(err)
+          this.$emit('error', 'The transaction was rejected.')
         }// else show error
-        this.loadingName = false
         this.$emit('update')
+      } else {
+        this.$emit('error', 'Please enter a name.')
       }
+      this.loadingName = false
     },
     async promote (address) {
       try {
@@ -123,6 +129,7 @@ export default {
         await tx.wait()
       } catch (err) {
         console.log(err)
+        this.$emit('error', 'The transaction was rejected.')
       }// else show error
       this.loadingDemote = false
       this.$emit('update')
@@ -139,6 +146,7 @@ export default {
         await tx.wait()
       } catch (err) {
         console.log(err)
+        this.$emit('error', 'The transaction was rejected.')
       }// else show error
       this.loadingDemote = false
       this.$emit('update')
@@ -156,6 +164,7 @@ export default {
         await tx.wait()
       } catch (err) {
         console.log(err)
+        this.$emit('error', 'The transaction was rejected.')
       }// else show error
       this.loadingBurn = false
       this.$emit('update')
