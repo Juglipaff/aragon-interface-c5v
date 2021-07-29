@@ -576,9 +576,9 @@ export default {
   background-color:rgb(255, 116, 116);
   color:white;
   padding-top:20px;
-  padding-bottom:60px;
+  padding-bottom:140px;
   border-top:1px solid rgb(255, 154, 154);
-  margin-bottom:-40px;
+  margin-bottom:-120px;
 }
 .fileTypes{
   margin-left:30px;
