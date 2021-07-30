@@ -32,7 +32,7 @@
             <div v-else class="wallet">{{currentAccount[0]}}</div>
             <div v-if="userName||userPosition" class="NamePosition">{{userName}}{{userPosition&&userName?' | ':''}}{{userPosition}}</div>
 
-            <div v-if="isManager" class="role">{{hasPermission? 'Admin':''}} Manager</div>
+            <div v-if="isManager" class="role">Manager</div>
             <div v-else-if="isAdmin" class="role">Admin</div>
             <div v-else-if="hasPermission" class="role">Member</div>
             <div v-else class="role">Guest</div>
@@ -96,12 +96,12 @@
                 :key="holder.address"
                 @update="update"
                 @error="addError"
-                :isAdmin="isAdmin"
                 :managerContract="managerContract"
                 :provider="provider"
-                :holder="holder"
+                :holderProp="holder"
                 :currentAccount="currentAccount"
                 :isRightChain="rightChainId"
+                :updateList="updateList"
               />
               <div class="holder">
                 <input class="inputHolder" placeholder="Address" v-model="newAddress">
@@ -172,11 +172,11 @@ export default {
       rpcUrl: 'https://rpc.c5v.network/',
       ipfsUrl: 'https://ipfs.io/ipfs/',
 
-      votingAddress: '0xa42a503a3c35d215ab9540446196427c498054e2',
-      tokensAddress: '0xfd0a27912e687ae41e8fb3da346615893e519538',
-      tokenAddress: '0x57a2e4ef40d94275f261c83aeefdf3387c3cbca7',
-      ACLAddress: '0x127b94a79cfa9cca2d9cf488f391fc88d73ae3c7',
-      managerAddress: '0x670102311c97d6642b0e249b459b8b5634ad3c7c',
+      votingAddress: '0x5ae22327492d45b92ccf768c016eeac4221363d6',
+      tokensAddress: '0x4120b84f156b517a217d3bdf02219190cae4a7ba',
+      tokenAddress: '0x6b2b384231e2c08dc38d8c12984d7aeee7f53ae4',
+      ACLAddress: '0xbc814d6a8159fb177f0adaee769465dc642e0d32',
+      managerAddress: '0xc65ccbf2676a8783089b0b8b445b0c1d644e9625',
 
       provider: null,
       voting: null,
@@ -386,7 +386,6 @@ export default {
           this.loadingMint = true
           const tx = await this.managerContract.connect(this.provider.getSigner()).mint(
             to,
-            1,
             {
               gasPrice: '0'
             }

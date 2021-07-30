@@ -1,32 +1,43 @@
 <template>
-    <div :class="[holder.isManager ? 'manager' : (holder.isAdmin ? 'admin' : ''), 'holder2']">
-        <div :class="[holder.isManager ? 'addressViolet' : holder.isAdmin ? 'addressRed' : 'addressBlue','holderAddress']">{{cutAddress(holder.holder)}}</div>
-        <button v-if="isAdmin&&!holder.isManager" class="holderButton" :disabled="currentAccount.length===0||!isRightChain||loadingBurn" v-on:click="burn(holder.holder)">
+    <div :class="addressPrimaryColor" v-if="holder">
+
+        <div :class="addressSecondaryColor">{{cutAddress(holder.holder)}}</div>
+
+        <button v-if="!holder.isManager" class="holderButton" :disabled="currentAccount.length===0||!isRightChain||loadingBurn" v-on:click="burn(holder.holder)">
             <span v-if="!loadingBurn">Remove</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </button>
-        <button class="demoteButton" v-if="holder.isAdmin &&!holder.isManager" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="demote(holder.holder)">
+
+        <!-- <button class="demoteButton" v-if="holder.isAdmin &&!holder.isManager" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="demote(holder.holder)">
             <span v-if="!loadingDemote">Demote to Member</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </button>
         <button class="promoteButton" v-else-if="!holder.isManager" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="promote(holder.holder)">
             <span v-if="!loadingDemote">Promote to Admin</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-        </button>
-        <div class="role">{{holder.isAdmin?'Admin ':'Member '}}<span>{{holder.isManager?' Manager':''}}</span></div>
+        </button> -->
+        <div class="roleManager" v-if="holder.isManager">Manager</div>
+        <div :class="[holder.isAdmin? 'roleAdmin':(holder.canVote?'roleMember':'roleExpert')]" v-else v-on:click="openRoleModal=true">+ {{holder.isAdmin?'Admin':holder.canVote?'Member':'Expert'}}</div>
 
-        <button v-if="isAdmin" :class="[holder.name ? 'updateName' : 'addName']" v-on:click="openNameModal=true">
-            <span v-if="holder.name">{{holder.name}}</span><span v-else>+ Add Name</span>
-        </button>
-
-        <button v-if="isAdmin" :class="[holder.position ? 'updatePosition' : 'addPosition']" v-on:click="openPositionModal=true">
-            <span v-if="holder.position">{{holder.position}}</span><span v-else>+ Add Position</span>
+        <button :class="[holder.name ? 'updateName' : 'addName']" v-on:click="openNameModal=true">
+            <span v-if="holder.name">{{holder.name}}</span><span v-else>+ Assign Name</span>
         </button>
 
-      <div class="modalDiv" v-if="isAdmin">
-         <div v-if="openNameModal||openPositionModal" class="closeModalBackground" v-on:click="openNameModal=false; openPositionModal=false;"></div>
+        <button :class="[holder.position ? 'updatePosition' : 'addPosition']" v-on:click="openPositionModal=true">
+            <span v-if="holder.position">{{holder.position}}</span><span v-else>+ Assign Position</span>
+        </button>
+
+      <div class="modalDiv">
+
+         <div v-if="openNameModal||openPositionModal||openRoleModal"
+          class="closeModalBackground"
+          v-on:click="
+            openNameModal=false;
+            openPositionModal=false;
+            openRoleModal=false"></div>
+
          <div v-if="openNameModal" class="nameModal">
-          Change user name: <br>
+          Change user name <br>
           <input type="text" class="input" v-model="newName">
           <button class="nameButton" :disabled="currentAccount.length===0||!isRightChain||loadingName" v-on:click="assignName(holder.holder,newName)">
               <span v-if="!loadingName">Change</span>
@@ -34,16 +45,38 @@
           </button>
         </div>
 
-      <div class="positionDiv"  v-if="isAdmin">
+      <div class="positionDiv">
         <div v-if="openPositionModal" class="positionModal">
-          Change user position: <br>
+          Change user position <br>
           <input type="text" class="input" v-model="newPosition">
           <button class="nameButton" :disabled="currentAccount.length===0||!isRightChain||loadingPosition" v-on:click="assignPosition(holder.holder,newPosition)">
               <span v-if="!loadingPosition">Change</span>
               <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
           </button>
         </div>
+      </div>
+
+      <div class="roleDiv">
+        <div v-if="openRoleModal" class="roleModal">
+          Change user role <br>
+          <button v-if="!holder.isAdmin || !holder.canVote" class="nameButton" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="setAdmin(holder.holder)">
+            <span v-if="!loadingDemote">Admin</span>
+            <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+          </button>
+
+          <button v-if="holder.isAdmin || !holder.canVote" class="nameButton" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="demote(holder.holder)">
+            <span v-if="!loadingDemote">Member</span>
+            <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+          </button>
+
+          <button  v-if="holder.isAdmin || holder.canVote" class="nameButton" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="setExpert(holder.holder)">
+            <span v-if="!loadingDemote">Expert</span>
+            <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+          </button>
+
         </div>
+      </div>
+
     </div>
     </div>
 </template>
@@ -55,10 +88,10 @@ export default {
   props: {
     provider: Object,
     managerContract: Object,
-    holder: Object,
+    holderProp: Object,
     currentAccount: Array,
-    isAdmin: Boolean,
-    isRightChain: Boolean
+    isRightChain: Boolean,
+    updateList: Boolean
   },
   data () {
     return {
@@ -66,13 +99,53 @@ export default {
       loadingDemote: false,
       loadingName: false,
       loadingPosition: false,
+      openRoleModal: false,
       openNameModal: false,
       newName: '',
       openPositionModal: false,
-      newPosition: ''
+      newPosition: '',
+      holder: null
+    }
+  },
+
+  async created () {
+    this.updateHolder()
+  },
+  watch: {
+    updateList: function () {
+      this.updateHolder()
+    }
+  },
+  computed: {
+    addressPrimaryColor () {
+      if (this.holder.isManager) {
+        return ['manager', 'holder2']
+      }
+      if (this.holder.isAdmin) {
+        return ['admin', 'holder2']
+      }
+      if (!this.holder.canVote) {
+        return ['expert', 'holder2']
+      }
+      return 'holder2'
+    },
+    addressSecondaryColor () {
+      if (this.holder.isManager) {
+        return ['addressViolet', 'holderAddress']
+      }
+      if (this.holder.isAdmin) {
+        return ['addressRed', 'holderAddress']
+      }
+      if (!this.holder.canVote) {
+        return ['addressGreen', 'holderAddress']
+      }
+      return ['addressBlue', 'holderAddress']
     }
   },
   methods: {
+    async updateHolder () {
+      this.holder = { ...this.holderProp, canVote: await this.managerContract.hasVotePermission(this.holderProp.holder) }
+    },
     async assignPosition (address, position) {
       if (position !== '') {
         try {
@@ -88,7 +161,7 @@ export default {
         } catch (err) {
           console.log(err)
           this.$emit('error', 'The transaction was rejected.')
-        }// else show error
+        }
         this.$emit('update')
       } else {
         this.$emit('error', 'Please enter a position.')
@@ -110,14 +183,31 @@ export default {
         } catch (err) {
           console.log(err)
           this.$emit('error', 'The transaction was rejected.')
-        }// else show error
+        }
         this.$emit('update')
       } else {
         this.$emit('error', 'Please enter a name.')
       }
       this.loadingName = false
     },
-    async promote (address) {
+    async setExpert (address) {
+      try {
+        this.loadingDemote = true
+        const tx = await this.managerContract.connect(this.provider.getSigner()).addExpert(
+          address,
+          {
+            gasPrice: '0'
+          }
+        )
+        await tx.wait()
+      } catch (err) {
+        console.log(err)
+        this.$emit('error', 'The transaction was rejected.')
+      }
+      this.loadingDemote = false
+      this.$emit('update')
+    },
+    async setAdmin (address) {
       try {
         this.loadingDemote = true
         const tx = await this.managerContract.connect(this.provider.getSigner()).addAdmin(
@@ -130,14 +220,14 @@ export default {
       } catch (err) {
         console.log(err)
         this.$emit('error', 'The transaction was rejected.')
-      }// else show error
+      }
       this.loadingDemote = false
       this.$emit('update')
     },
-    async demote (address) {
+    async demote (address) { // doesnt work if the user is admin
       try {
         this.loadingDemote = true
-        const tx = await this.managerContract.connect(this.provider.getSigner()).removeAdmin(
+        const tx = await this.managerContract.connect(this.provider.getSigner()).addMember(
           address,
           {
             gasPrice: '0'
@@ -147,7 +237,7 @@ export default {
       } catch (err) {
         console.log(err)
         this.$emit('error', 'The transaction was rejected.')
-      }// else show error
+      }
       this.loadingDemote = false
       this.$emit('update')
     },
@@ -156,7 +246,6 @@ export default {
         this.loadingBurn = true
         const tx = await this.managerContract.connect(this.provider.getSigner()).burn(
           address,
-          1,
           {
             gasPrice: '0'
           }
@@ -165,7 +254,7 @@ export default {
       } catch (err) {
         console.log(err)
         this.$emit('error', 'The transaction was rejected.')
-      }// else show error
+      }
       this.loadingBurn = false
       this.$emit('update')
     },
@@ -192,6 +281,25 @@ export default {
 }
 .positionDiv{
   margin-left:90px;
+}
+.roleDiv{
+  position:relative;
+  float:right;
+  right:220px;
+
+}
+.roleModal{
+   margin-top:7px;
+  position: absolute;
+  padding-top:8px;
+  padding-bottom:10px;
+  padding-right:15px;
+  padding-left:15px;
+  background-color:white;
+  border:1px solid rgb(228, 228, 228);
+  border-radius:10px;
+  z-index:1000;
+  width:130px;
 }
 .positionModal{
   margin-top:7px;
@@ -239,15 +347,57 @@ height:26px;
 .nameButton:hover{
  background-color:rgb(75, 159, 255);
 }
-.role{
+.roleAdmin{
   border-radius:5px;
   margin-right: 20px;
   float:right;
-  background-color:rgba(0, 0, 0,0.05);
+  color:rgb(255, 105, 105);
+  border:2px solid rgb(255, 105, 105);
+  padding-top:4px;
+  padding-bottom:3px;
+  padding-left:10px;
+  margin-top:2px;
+  padding-right:10px;
+}
+.roleAdmin:hover{
+  background-color:rgba(0, 0, 0,0.03);
+}
+.roleManager{
+  border-radius:5px;
+  margin-right: 20px;
+  float:right;
+  background-color:rgba(0, 0, 0,0.06);
   padding-top:5px;
   padding-bottom:5px;
   padding-left:10px;
   padding-right:10px;
+}
+.roleMember{
+  border-radius:5px;
+  margin-right: 20px;
+  float:right;
+  color:rgb(105, 175, 255);
+  border:2px solid rgb(105, 175, 255);
+  padding-top:4px;
+  padding-bottom:3px;
+  padding-left:10px;
+  margin-top:2px;
+  padding-right:10px;
+}
+.roleExpert{
+  border-radius:5px;
+  margin-right: 20px;
+  float:right;
+  color:rgb(44, 168, 71);
+  border:2px solid rgb(44, 168, 71);
+  padding-top:4px;
+  padding-bottom:3px;
+  padding-left:10px;
+  margin-top:2px;
+  padding-right:10px;
+}
+.roleMember:hover{
+  background-color:rgba(0, 0, 0,0.03);
 }
 .manager{
   background-color:rgb(250, 241, 253);
@@ -255,12 +405,16 @@ height:26px;
 .admin{
   background-color:rgb(255, 246, 248);
 }
+.expert{
+  background-color:rgb(246, 255, 247);
+}
 .holder2{
   padding-top:10px;
   padding-left: 20px;
   padding-bottom:10px;
   border-bottom:1px solid rgb(228, 228, 228);
 }
+
 .promoteButton{
   transition:0.2s;
   outline:none;
@@ -406,6 +560,9 @@ height:26px;
   text-align: center;
   line-height:30px;
   border-radius: 5px;
+}
+.addressGreen{
+  background-color:rgb(212, 255, 215);
 }
 .addressViolet{
   background-color:rgb(238, 212, 255);
