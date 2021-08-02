@@ -6,7 +6,7 @@
       </div>
       <div class="progress">
         Yes: {{question.yea}} <span v-if="!question.executed&&!expired" class="buttons">
-        <button class="yes" v-if="hasPermission && canVote" v-on:click="vote(true)" :disabled="votedYes || !currentAccount || loading || !isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
+        <button class="yes" v-if="isTokenHolder && canVote" v-on:click="vote(true)" :disabled="votedYes || !currentAccount || loading || !isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
       </span><br>
         <progress-bar
           :options="yesOptions"
@@ -15,7 +15,7 @@
       </div>
       <div class="progress">
         No: {{question.nay}} <span v-if="!question.executed&&!expired" class="buttons">
-        <button class="no" v-if="hasPermission && canVote" v-on:click="vote(false)" :disabled="votedNo || !currentAccount || loading || !isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
+        <button class="no" v-if="isTokenHolder && canVote" v-on:click="vote(false)" :disabled="votedNo || !currentAccount || loading || !isRightChain"><span v-if="!loading">Vote</span><div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div></button>
       </span><br>
         <progress-bar
           :options="noOptions"
@@ -39,7 +39,7 @@ export default {
     question: Object,
     currentAccount: String,
     provider: Object,
-    hasPermission: Boolean,
+    isTokenHolder: Boolean,
     updateList: Boolean,
     isRightChain: Boolean
   },

@@ -8,7 +8,7 @@
             <div class="settingsContainer">
               <div class="settingsHolder">
                 <div class="requirements">Minimum Support</div>
-                  <button v-on:click="changeSupport(supportRequiredPct)" class="holderButton" :disabled="!hasPermission||currentAccount.length===0||loadingSupport||!rightChainId">
+                  <button v-on:click="changeSupport(supportRequiredPct)" class="holderButton" :disabled="role==='Guest'||currentAccount.length===0||loadingSupport||!rightChainId">
                     <span v-if="!loadingSupport">Propose Change</span>
                     <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                   </button>
@@ -16,7 +16,7 @@
               </div>
               <div class="settingsHolder">
                 <div class="requirements">Minimum Approval</div>
-                  <button v-on:click="changeMinQuorum(minAcceptQuorum)" class="holderButton" :disabled="!hasPermission||currentAccount.length===0||loadingQuorum||!rightChainId">
+                  <button v-on:click="changeMinQuorum(minAcceptQuorum)" class="holderButton" :disabled="role==='Guest'||currentAccount.length===0||loadingQuorum||!rightChainId">
                     <span v-if="!loadingQuorum">Propose Change</span>
                     <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                   </button>
@@ -26,21 +26,18 @@
          </div>
 
         <div class="header">
-            <font-awesome-icon class="cog" v-if="hasPermission" v-on:click="showSettings" :icon="['fas', 'cog']" />
+            <font-awesome-icon class="cog" v-if="role!=='Guest'" v-on:click="showSettings" :icon="['fas', 'cog']" />
             <div v-if="!rightChainId" class="wrongNet" v-on:click="switchNetwork">Wrong Network!</div>
             <button v-else-if="currentAccount.length===0" class="connectWallet" v-on:click="connectWallet">Connect wallet</button>
             <div v-else class="wallet">{{currentAccount[0]}}</div>
             <div v-if="userName||userPosition" class="NamePosition">{{userName}}{{userPosition&&userName?' | ':''}}{{userPosition}}</div>
 
-            <div v-if="isManager" class="role">Manager</div>
-            <div v-else-if="isAdmin" class="role">Admin</div>
-            <div v-else-if="hasPermission" class="role">Member</div>
-            <div v-else class="role">Guest</div>
+            <div class="role">{{role}}</div>
 
         </div>
         <div class="padding"></div>
-        <div v-if="hasPermission" class="createProposal">Create Proposal</div>
-          <div v-if="hasPermission" class="top-row">
+        <div v-if="role!=='Guest'" class="createProposal">Create Proposal</div>
+          <div v-if="role!=='Guest'" class="top-row">
             <div class="questionInput">
               <div class="question-title">Question</div>
               <input class="inputQuestion" v-model="question">
@@ -82,14 +79,14 @@
               :votingAddress="votingAddress"
               :currentAccount="currentAccount[0]"
               :provider="provider"
-              :hasPermission="hasPermission"
+              :isTokenHolder="role!=='Guest'&&role!=='Expert'"
               :updateList="updateList"
               :isRightChain="rightChainId"
               />
             </div>
 
-          <div v-if="isAdmin" class="createProposal">Token Holders</div>
-            <div v-if="isAdmin" class="tokenHolders">
+          <div v-if="role==='Admin'||role==='Manager'" class="createProposal">Token Holders</div>
+            <div v-if="role==='Admin'||role==='Manager'" class="tokenHolders">
               <div class="holderHeader">Holder</div>
               <HOLDER
                 v-for="holder in holders"
@@ -98,14 +95,13 @@
                 @error="addError"
                 :managerContract="managerContract"
                 :provider="provider"
-                :holderProp="holder"
+                :holder="holder"
                 :currentAccount="currentAccount"
                 :isRightChain="rightChainId"
-                :updateList="updateList"
               />
               <div class="holder">
                 <input class="inputHolder" placeholder="Address" v-model="newAddress">
-                <button class="submitHolder" :disabled="!hasPermission||currentAccount.length===0||loadingMint||!rightChainId" v-on:click="mint(newAddress)">
+                <button class="submitHolder" :disabled="role==='Guest'||currentAccount.length===0||loadingMint||!rightChainId" v-on:click="mint(newAddress)">
                   <span v-if="!loadingMint">Add Participant</span>
                   <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 </button>
@@ -124,7 +120,7 @@
                 :votingAddress="votingAddress"
                 :currentAccount="currentAccount[0]"
                 :provider="provider"
-                :hasPermission="hasPermission"
+                :isTokenHolder="role!=='Guest'&&role!=='Expert'"
                 :updateList="updateList"
                 :isRightChain="rightChainId"
                 />
@@ -172,11 +168,11 @@ export default {
       rpcUrl: 'https://rpc.c5v.network/',
       ipfsUrl: 'https://ipfs.io/ipfs/',
 
-      votingAddress: '0x5ae22327492d45b92ccf768c016eeac4221363d6',
-      tokensAddress: '0x4120b84f156b517a217d3bdf02219190cae4a7ba',
-      tokenAddress: '0x6b2b384231e2c08dc38d8c12984d7aeee7f53ae4',
-      ACLAddress: '0xbc814d6a8159fb177f0adaee769465dc642e0d32',
-      managerAddress: '0xc65ccbf2676a8783089b0b8b445b0c1d644e9625',
+      votingAddress: '0x16b14b163f40e603ae85cb078c5cb514319878c3',
+      tokensAddress: '0x4f2983ddbd6de8fa0a13a6de99a535121fca3c23',
+      tokenAddress: '0x965bb2f812a57ac0fcbb60829e3f4d9a07561608',
+      ACLAddress: '0x81745c08facedb82b8b422b0384d585aaea8ac9f',
+      managerAddress: '0x52656eba5b360959c7707a0fcba489d5af1625e1',
 
       provider: null,
       voting: null,
@@ -190,7 +186,6 @@ export default {
       loadingSupport: false,
       loadingQuorum: false,
       pageLoading: true,
-      hasPermission: false,
       updateList: false,
       holders: [],
       newAddress: '',
@@ -202,24 +197,17 @@ export default {
       ACLContract: null,
       managerContract: null,
       rightChainId: false,
-      isAdmin: false,
-      manager: false,
+      manager: null,
       userName: null,
       userPosition: null,
       showSettingsModal: false,
       file: null,
       fileUploading: false,
-      errors: []
+      errors: [],
+      role: null
     }
   },
-  computed: {
-    isManager () {
-      if (this.currentAccount[0]) {
-        return this.manager === ethers.utils.getAddress(this.currentAccount[0])
-      }
-      return false
-    }
-  },
+
   async created () {
     if (window.ethereum) {
       window.ethereum.on('chainChanged', (chain) => {
@@ -474,46 +462,47 @@ export default {
       try {
         const tokenHolders = await this.tokenContract.getTokenHolders()
         const adminList = await this.managerContract.getAdmins()
-        this.holders = tokenHolders.map((item) => ({
+
+        this.holders = await Promise.all(tokenHolders.map(async (item) => ({
           ...item,
-          isAdmin: adminList.includes(item.holder) || item.holder.toLowerCase() === this.manager.toLowerCase(),
-          isManager: item.holder.toLowerCase() === this.manager.toLowerCase(),
-          hasPermission: true
-        }))
-        this.holders = this.holders.sort((a, b) => {
-          if (a.isManager) {
-            return -1
-          }
-          if (a.isAdmin && !b.isAdmin) {
-            return -1
-          }
-          if (a.isAdmin && b.isAdmin) {
-            return 0
-          }
-          if (!a.isAdmin && b.isAdmin) {
-            return 1
-          }
-          if (!a.isAdmin && !b.isAdmin) {
-            return 0
-          }
-          return 1
-        })
-
-        if (this.currentAccount[0]) {
-          var accountInfo = tokenHolders.find((a) => { return a.holder.toLowerCase() === this.currentAccount[0].toLowerCase() })
-          this.hasPermission = !!accountInfo
-          this.isAdmin = adminList.includes(ethers.utils.getAddress(this.currentAccount[0])) || this.manager === ethers.utils.getAddress(this.currentAccount[0])
-        } else {
-          this.hasPermission = false
-          this.isAdmin = false
+          role: await (new Promise((resolve) => {
+            if (item.holder.toLowerCase() === this.manager.toLowerCase()) {
+              resolve('Manager')
+            }
+            if (adminList.includes(item.holder)) {
+              resolve('Admin')
+            }
+            this.managerContract.hasVotePermission(item.holder).then((res) => {
+              if (!res) {
+                resolve('Expert')
+              } else {
+                resolve('Member')
+              }
+            })
+          }))
+        })))
+        const sortedBy = {
+          Manager: 0,
+          Admin: 1,
+          Expert: 2,
+          Member: 3
         }
-
-        if (this.hasPermission) {
-          this.userName = accountInfo.name
-          this.userPosition = accountInfo.position
+        this.holders = this.holders.sort((a, b) => sortedBy[a.role] - sortedBy[b.role])
+        if (this.currentAccount[0]) {
+          var accountInfo = this.holders.find((a) => { return a.holder.toLowerCase() === this.currentAccount[0].toLowerCase() })
+          if (accountInfo) {
+            this.userName = accountInfo.name
+            this.userPosition = accountInfo.position
+            this.role = accountInfo.role
+          } else {
+            this.userName = null
+            this.userPosition = null
+            this.role = 'Guest'
+          }
         } else {
           this.userName = null
           this.userPosition = null
+          this.role = 'Guest'
         }
 
         this.token.totalSupply = await this.tokenContract.totalSupply()

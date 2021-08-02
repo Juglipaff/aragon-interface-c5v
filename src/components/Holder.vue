@@ -3,21 +3,13 @@
 
         <div :class="addressSecondaryColor">{{cutAddress(holder.holder)}}</div>
 
-        <button v-if="!holder.isManager" class="holderButton" :disabled="currentAccount.length===0||!isRightChain||loadingBurn" v-on:click="burn(holder.holder)">
+        <button v-if="holder.role !== 'Manager'" class="holderButton" :disabled="currentAccount.length===0||!isRightChain||loadingBurn" v-on:click="burn(holder.holder)">
             <span v-if="!loadingBurn">Remove</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
         </button>
 
-        <!-- <button class="demoteButton" v-if="holder.isAdmin &&!holder.isManager" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="demote(holder.holder)">
-            <span v-if="!loadingDemote">Demote to Member</span>
-            <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-        </button>
-        <button class="promoteButton" v-else-if="!holder.isManager" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="promote(holder.holder)">
-            <span v-if="!loadingDemote">Promote to Admin</span>
-            <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
-        </button> -->
-        <div class="roleManager" v-if="holder.isManager">Manager</div>
-        <div :class="[holder.isAdmin? 'roleAdmin':(holder.canVote?'roleMember':'roleExpert')]" v-else v-on:click="openRoleModal=true">+ {{holder.isAdmin?'Admin':holder.canVote?'Member':'Expert'}}</div>
+        <div class="roleManager" v-if="holder.role === 'Manager'">Manager</div>
+        <div :class="[holder.role === 'Admin'? 'roleAdmin':(holder.role === 'Expert'?'roleExpert':'roleMember')]" v-else v-on:click="openRoleModal=true">+ {{holder.role === 'Admin'?'Admin':holder.role === 'Expert'?'Expert':'Member'}}</div>
 
         <button :class="[holder.name ? 'updateName' : 'addName']" v-on:click="openNameModal=true">
             <span v-if="holder.name">{{holder.name}}</span><span v-else>+ Assign Name</span>
@@ -59,17 +51,17 @@
       <div class="roleDiv">
         <div v-if="openRoleModal" class="roleModal">
           Change user role <br>
-          <button v-if="!holder.isAdmin || !holder.canVote" class="nameButton" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="setAdmin(holder.holder)">
+          <button v-if="holder.role !== 'Admin' || holder.role === 'Expert'" class="adminButton" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="setAdmin(holder.holder)">
             <span v-if="!loadingDemote">Admin</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
           </button>
 
-          <button v-if="holder.isAdmin || !holder.canVote" class="nameButton" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="demote(holder.holder)">
+          <button v-if="holder.role === 'Admin' || holder.role === 'Expert'" class="memberButton" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="demote(holder.holder)">
             <span v-if="!loadingDemote">Member</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
           </button>
 
-          <button  v-if="holder.isAdmin || holder.canVote" class="nameButton" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="setExpert(holder.holder)">
+          <button  v-if="holder.role === 'Admin' || holder.role !== 'Expert'" class="expertButton" :disabled="currentAccount.length===0||!isRightChain||loadingDemote" v-on:click="setExpert(holder.holder)">
             <span v-if="!loadingDemote">Expert</span>
             <div v-else class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
           </button>
@@ -88,10 +80,9 @@ export default {
   props: {
     provider: Object,
     managerContract: Object,
-    holderProp: Object,
+    holder: Object,
     currentAccount: Array,
-    isRightChain: Boolean,
-    updateList: Boolean
+    isRightChain: Boolean
   },
   data () {
     return {
@@ -103,49 +94,40 @@ export default {
       openNameModal: false,
       newName: '',
       openPositionModal: false,
-      newPosition: '',
-      holder: null
+      newPosition: ''
     }
   },
 
-  async created () {
-    this.updateHolder()
-  },
-  watch: {
-    updateList: function () {
-      this.updateHolder()
-    }
-  },
   computed: {
     addressPrimaryColor () {
-      if (this.holder.isManager) {
+      if (this.holder.role === 'Manager') {
         return ['manager', 'holder2']
       }
-      if (this.holder.isAdmin) {
+      if (this.holder.role === 'Admin') {
         return ['admin', 'holder2']
       }
-      if (!this.holder.canVote) {
+      if (this.holder.role === 'Expert') {
         return ['expert', 'holder2']
       }
       return 'holder2'
     },
     addressSecondaryColor () {
-      if (this.holder.isManager) {
+      if (this.holder.role === 'Manager') {
         return ['addressViolet', 'holderAddress']
       }
-      if (this.holder.isAdmin) {
+      if (this.holder.role === 'Admin') {
         return ['addressRed', 'holderAddress']
       }
-      if (!this.holder.canVote) {
+      if (this.holder.role === 'Expert') {
         return ['addressGreen', 'holderAddress']
       }
       return ['addressBlue', 'holderAddress']
     }
   },
+  created () {
+    console.log(this.holder)
+  },
   methods: {
-    async updateHolder () {
-      this.holder = { ...this.holderProp, canVote: await this.managerContract.hasVotePermission(this.holderProp.holder) }
-    },
     async assignPosition (address, position) {
       if (position !== '') {
         try {
@@ -266,6 +248,58 @@ export default {
 }
 </script>
 <style scoped>
+.expertButton{
+   margin-top:5px;
+  vertical-align: top;
+  transition:0.2s;
+  border-radius:3px;
+  margin-left:10px;
+  cursor: pointer;
+  height:30px;
+  background-color:rgb(87, 209, 107);
+  color:white;
+  border:none;
+  width:100px;
+  font-size:16px;
+}
+.expertButton:hover{
+ background-color:rgb(89, 187, 76);
+}
+.memberButton{
+  margin-top:5px;
+  vertical-align: top;
+  transition:0.2s;
+  border-radius:3px;
+  margin-left:10px;
+  cursor: pointer;
+  height:30px;
+  background-color:rgb(121, 174, 255);
+  color:white;
+  border:none;
+  width:100px;
+  font-size:16px;
+}
+.memberButton:hover{
+ background-color:rgb(96, 145, 218);
+}
+.adminButton{
+      margin-top:5px;
+  vertical-align: top;
+  transition:0.2s;
+   border-radius:3px;
+   margin-left:10px;
+  cursor: pointer;
+  height:30px;
+ background-color:rgb(255, 105, 105);
+ color:white;
+ border:none;
+ width:100px;
+ font-size:16px;
+}
+.adminButton:hover{
+ background-color:rgb(218, 80, 80);
+}
+
 .closeModalBackground{
   position: fixed;
   width:100vw;
@@ -293,13 +327,13 @@ export default {
   position: absolute;
   padding-top:8px;
   padding-bottom:10px;
-  padding-right:15px;
-  padding-left:15px;
+  padding-right:7px;
+  padding-left:7px;
   background-color:white;
   border:1px solid rgb(228, 228, 228);
   border-radius:10px;
   z-index:1000;
-  width:130px;
+  width:230px;
 }
 .positionModal{
   margin-top:7px;
@@ -337,7 +371,7 @@ export default {
   transition:0.2s;
    border-radius:3px;
    margin-left:3px;
-
+cursor: pointer;
 height:26px;
  background-color:rgb(105, 175, 255);
  color:white;
@@ -347,7 +381,11 @@ height:26px;
 .nameButton:hover{
  background-color:rgb(75, 159, 255);
 }
+.nameButton:disabled{
+ background-color:rgb(179, 179, 179);
+}
 .roleAdmin{
+  cursor: pointer;
   border-radius:5px;
   margin-right: 20px;
   float:right;
@@ -373,6 +411,7 @@ height:26px;
   padding-right:10px;
 }
 .roleMember{
+  cursor: pointer;
   border-radius:5px;
   margin-right: 20px;
   float:right;
@@ -384,7 +423,11 @@ height:26px;
   margin-top:2px;
   padding-right:10px;
 }
+.roleMember:hover{
+  background-color:rgba(0, 0, 0,0.03);
+}
 .roleExpert{
+  cursor: pointer;
   border-radius:5px;
   margin-right: 20px;
   float:right;
@@ -396,7 +439,7 @@ height:26px;
   margin-top:2px;
   padding-right:10px;
 }
-.roleMember:hover{
+.roleExpert:hover{
   background-color:rgba(0, 0, 0,0.03);
 }
 .manager{
