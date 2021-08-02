@@ -109,7 +109,7 @@ contract MembershipTemplate is BaseTemplate, TokenCache {
         internal
     {
         _createEvmScriptsRegistryPermissions(_acl, _voting, _voting);
-        _createVotingPermissions(_acl, _voting, _voting, _tokenManager, _voting);
+        _createVotingPermissions(_acl, _voting, _voting, _tokenManager, _voting, admin);
         _createTokenManagerPermissions(_acl, _tokenManager, admin, admin);
     }
 

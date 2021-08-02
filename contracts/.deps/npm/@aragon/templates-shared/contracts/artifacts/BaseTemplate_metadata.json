@@ -103,9 +103,9 @@
 	},
 	"sources": {
 		".deps/npm/@aragon/templates-shared/contracts/BaseTemplate.sol": {
-			"keccak256": "0x3d6515a92d6715ef2b1c1fbfc8991a51ddd23fb53894037b1d23348e797217a2",
+			"keccak256": "0x1e1ef4fdb102d6718da9109ae82159c862c5b49de45f4546f3f4fabe19c6c8a9",
 			"urls": [
-				"bzzr://2cfacba61397d650ed4b101e05f4a66795546e10b6ae36e7cbb45bd2d2de8bf9"
+				"bzzr://4ad358a092ef33db3081c9f323715715c8d550535cf6cf7ecc5c4e1a005565b9"
 			]
 		},
 		"@aragon/apps-agent/contracts/Agent.sol": {
@@ -181,9 +181,9 @@
 			]
 		},
 		"@aragon/apps-voting/contracts/Voting.sol": {
-			"keccak256": "0xb4e551caa438c147caa538177e90471d2fe1352c9e65295b228fffdd4b25b047",
+			"keccak256": "0xf3672bd012dd57cf5ac570c6ce85b795c291d04d36daaa69fed13c1184ac5371",
 			"urls": [
-				"bzzr://27accdbf622bb18ba323cf6f3afde61356b9d81690d87579956c2d7c70057704"
+				"bzzr://f24355dcc1406e47d4faf94ce4713c1d9f2b2e1658732d0138fe2400bc0fadfe"
 			]
 		},
 		"@aragon/id/contracts/IFIFSResolvingRegistrar.sol": {

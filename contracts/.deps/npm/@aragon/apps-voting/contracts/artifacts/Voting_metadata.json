@@ -295,6 +295,20 @@
 			{
 				"constant": true,
 				"inputs": [],
+				"name": "VOTE",
+				"outputs": [
+					{
+						"name": "",
+						"type": "bytes32"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
 				"name": "voteTime",
 				"outputs": [
 					{
@@ -903,9 +917,9 @@
 	},
 	"sources": {
 		".deps/npm/@aragon/apps-voting/contracts/Voting.sol": {
-			"keccak256": "0xb4e551caa438c147caa538177e90471d2fe1352c9e65295b228fffdd4b25b047",
+			"keccak256": "0xf3672bd012dd57cf5ac570c6ce85b795c291d04d36daaa69fed13c1184ac5371",
 			"urls": [
-				"bzzr://27accdbf622bb18ba323cf6f3afde61356b9d81690d87579956c2d7c70057704"
+				"bzzr://f24355dcc1406e47d4faf94ce4713c1d9f2b2e1658732d0138fe2400bc0fadfe"
 			]
 		},
 		"@aragon/apps-shared-minime/contracts/ITokenController.sol": {
@@ -915,9 +929,9 @@
 			]
 		},
 		"@aragon/apps-shared-minime/contracts/MiniMeToken.sol": {
-			"keccak256": "0xae8693d9ccee144cfd4949f87d0994d12e7d232b0b39d3f2f72a7b5c1e54800c",
+			"keccak256": "0xdd0f6c4ad5316758428e6c3a87eb59651d51c4c828f5aa0c34d243c924244f7d",
 			"urls": [
-				"bzzr://077b0f24788509f8aecd01587c0522a3b22c15c6bbdfe8b65a5234f3ae3502cf"
+				"bzzr://150c21a6b2fcbd9d68a8d46659b2b454034c79777dae282fe7bfcb6c7dc01030"
 			]
 		},
 		"@aragon/os/contracts/acl/ACLSyntaxSugar.sol": {

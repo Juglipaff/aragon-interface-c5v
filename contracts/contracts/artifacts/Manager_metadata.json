@@ -7,6 +7,25 @@
 		"abi": [
 			{
 				"constant": true,
+				"inputs": [
+					{
+						"name": "",
+						"type": "uint256"
+					}
+				],
+				"name": "adminList",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
 				"inputs": [],
 				"name": "initialized",
 				"outputs": [
@@ -20,17 +39,22 @@
 				"type": "function"
 			},
 			{
-				"constant": false,
+				"constant": true,
 				"inputs": [
 					{
-						"name": "admin",
+						"name": "_address",
 						"type": "address"
 					}
 				],
-				"name": "removeAdmin",
-				"outputs": [],
+				"name": "isAdmin",
+				"outputs": [
+					{
+						"name": "isIndeed",
+						"type": "bool"
+					}
+				],
 				"payable": false,
-				"stateMutability": "nonpayable",
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -62,43 +86,6 @@
 				"type": "function"
 			},
 			{
-				"constant": false,
-				"inputs": [
-					{
-						"name": "_receiver",
-						"type": "address"
-					},
-					{
-						"name": "_amount",
-						"type": "uint256"
-					}
-				],
-				"name": "mint",
-				"outputs": [],
-				"payable": false,
-				"stateMutability": "nonpayable",
-				"type": "function"
-			},
-			{
-				"constant": true,
-				"inputs": [
-					{
-						"name": "",
-						"type": "address"
-					}
-				],
-				"name": "admins",
-				"outputs": [
-					{
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"constant": true,
 				"inputs": [],
 				"name": "manager",
@@ -116,7 +103,35 @@
 				"constant": false,
 				"inputs": [
 					{
-						"name": "admin",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "addExpert",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "mint",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_address",
 						"type": "address"
 					}
 				],
@@ -130,7 +145,7 @@
 				"constant": false,
 				"inputs": [
 					{
-						"name": "_receiver",
+						"name": "_address",
 						"type": "address"
 					},
 					{
@@ -145,34 +160,11 @@
 				"type": "function"
 			},
 			{
-				"constant": true,
-				"inputs": [
-					{
-						"name": "",
-						"type": "uint256"
-					}
-				],
-				"name": "adminsArr",
-				"outputs": [
-					{
-						"name": "",
-						"type": "address"
-					}
-				],
-				"payable": false,
-				"stateMutability": "view",
-				"type": "function"
-			},
-			{
 				"constant": false,
 				"inputs": [
 					{
-						"name": "_holder",
+						"name": "_address",
 						"type": "address"
-					},
-					{
-						"name": "_amount",
-						"type": "uint256"
 					}
 				],
 				"name": "burn",
@@ -185,7 +177,7 @@
 				"constant": false,
 				"inputs": [
 					{
-						"name": "newManager",
+						"name": "_address",
 						"type": "address"
 					}
 				],
@@ -201,6 +193,14 @@
 					{
 						"name": "_tokenManager",
 						"type": "address"
+					},
+					{
+						"name": "_voting",
+						"type": "address"
+					},
+					{
+						"name": "_acl",
+						"type": "address"
 					}
 				],
 				"name": "initialize",
@@ -210,10 +210,43 @@
 				"type": "function"
 			},
 			{
+				"constant": true,
+				"inputs": [
+					{
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "hasVotePermission",
+				"outputs": [
+					{
+						"name": "hasPermission",
+						"type": "bool"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
 				"constant": false,
 				"inputs": [
 					{
-						"name": "_receiver",
+						"name": "_address",
+						"type": "address"
+					}
+				],
+				"name": "addMember",
+				"outputs": [],
+				"payable": false,
+				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": false,
+				"inputs": [
+					{
+						"name": "_address",
 						"type": "address"
 					},
 					{
@@ -225,6 +258,62 @@
 				"outputs": [],
 				"payable": false,
 				"stateMutability": "nonpayable",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "acl",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "getAdminsCount",
+				"outputs": [
+					{
+						"name": "entityCount",
+						"type": "uint256"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "token",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
+				"type": "function"
+			},
+			{
+				"constant": true,
+				"inputs": [],
+				"name": "voting",
+				"outputs": [
+					{
+						"name": "",
+						"type": "address"
+					}
+				],
+				"payable": false,
+				"stateMutability": "view",
 				"type": "function"
 			},
 			{
@@ -240,7 +329,38 @@
 			}
 		],
 		"devdoc": {
-			"methods": {}
+			"methods": {
+				"addAdmin(address)": {
+					"details": "addAdmin(): Assigns \"admin\" role to the {_address}, stores the address in {adminList} and the pointer to it in the {adminPointer}."
+				},
+				"addExpert(address)": {
+					"details": "addExpert(): Assigns \"expert\" role to the {_address}."
+				},
+				"addMember(address)": {
+					"details": "addMember(): Assigns \"member\" role to the {_address}."
+				},
+				"assignName(address,string)": {
+					"details": "assignName()/assignPosition(): Assigns name/position string to the address."
+				},
+				"burn(address)": {
+					"details": "burn(): Burns the membership token and revokes all rights from the {_address}."
+				},
+				"getAdmins()": {
+					"details": "getAdmins(): Returns {adminList}.  Todo: UNSCALABLE! Remove the function and move array fetching to the backend."
+				},
+				"hasVotePermission(address)": {
+					"details": "hasVotePermission(): Returns {hasPermission} for {_address}."
+				},
+				"initialize(address,address,address)": {
+					"details": "initialize(): Initializes this contract with external contract addresses and sets {initialized} to true."
+				},
+				"mint(address)": {
+					"details": "mint(): Mints the membership token and grants the right to vote."
+				},
+				"transferManager(address)": {
+					"details": "transferManager(): Transfer manager rights to another address."
+				}
+			}
 		},
 		"userdoc": {
 			"methods": {}
@@ -275,6 +395,12 @@
 			"keccak256": "0xd2d2f661ebd767b2372ff00d2919111fcf0e1e56e82d58fd020af2deb91470e5",
 			"urls": [
 				"bzzr://ba8233a06504027a44532d466c6201d7ae4359c0ef6807bd1fc0b65dd2e9115b"
+			]
+		},
+		"@aragon/apps-voting/contracts/Voting.sol": {
+			"keccak256": "0xf3672bd012dd57cf5ac570c6ce85b795c291d04d36daaa69fed13c1184ac5371",
+			"urls": [
+				"bzzr://f24355dcc1406e47d4faf94ce4713c1d9f2b2e1658732d0138fe2400bc0fadfe"
 			]
 		},
 		"@aragon/os/contracts/acl/ACL.sol": {
@@ -433,6 +559,12 @@
 				"bzzr://91dbd0e3335720d4a3d12a90682b8d9834f76e75918c1f646a84debb38089ece"
 			]
 		},
+		"@aragon/os/contracts/lib/math/SafeMath64.sol": {
+			"keccak256": "0x34f18573e7b2180645c67faaff60ebc713ab22c697606d3b3ce4fe0e745955f4",
+			"urls": [
+				"bzzr://192cb9d1b7a1fbf7e3709b1a18bccd3ee023f5b98e117246dc7ddc701e2fd9c0"
+			]
+		},
 		"@aragon/os/contracts/lib/token/ERC20.sol": {
 			"keccak256": "0xa2e319fde92f9e70912f09bf6e99bbf8b9b798961d54ffcba59d347d37bde1b7",
 			"urls": [
@@ -440,9 +572,9 @@
 			]
 		},
 		"contracts/Manager.sol": {
-			"keccak256": "0xdc699b4a37d0e209c1981ec6f0a9d5b1f85707095f8ecf51b4a036752de57b0e",
+			"keccak256": "0xeb265bb920afca527e166abefb1b33101e514969f507101c5ae2e2926bdd6015",
 			"urls": [
-				"bzzr://f56c952d79080563b3af95cc2d875a177197a99509b63ed236daa0fc47e16cb5"
+				"bzzr://0deae100f2c2859feafad583fde1ba7a8f8607df550a79fe381174204086d314"
 			]
 		}
 	},

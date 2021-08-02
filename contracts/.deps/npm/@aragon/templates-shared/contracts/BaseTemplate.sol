@@ -176,13 +176,15 @@ contract BaseTemplate is APMNamehash, IsContract {
         Voting _voting,
         address _settingsGrantee,
         address _createVotesGrantee,
-        address _manager
+        address _manager,
+        address _admin
     )
         internal
     {
         _acl.createPermission(_settingsGrantee, _voting, _voting.MODIFY_QUORUM_ROLE(), _manager);
         _acl.createPermission(_settingsGrantee, _voting, _voting.MODIFY_SUPPORT_ROLE(), _manager);
         _acl.createPermission(_createVotesGrantee, _voting, _voting.CREATE_VOTES_ROLE(), _manager);
+        _acl.createPermission(address(0), _voting, _voting.VOTE(), _admin);
     }
 
     /* SURVEY */
