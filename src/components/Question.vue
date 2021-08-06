@@ -1,8 +1,8 @@
 <template>
     <div class="question">
       <div class="title"><span class="id">#{{this.question.id}}: </span>
-        <span v-if="isText">{{questionTitle}}</span>
-        <div v-else-if="question.script === '0x00000006'" class="pdfContainer"><iframe class='pdf' title="iframe" :src="question.metadata"/><a class="newTab" target="_blank" :href="question.metadata"><font-awesome-icon :icon="['fa', 'external-link-alt']" /></a></div>
+        <span v-if="questionTitle!==''">{{questionTitle}}</span>
+        <div v-if="questionUrl!==''" class="pdfContainer"><iframe class='pdf' title="iframe" :src="questionUrl"/><a class="newTab" target="_blank" :href="questionUrl"><font-awesome-icon :icon="['fa', 'external-link-alt']" /></a></div>
       </div>
       <div class="progress">
         Yes: {{question.yea}} <span v-if="!question.executed&&!expired" class="buttons">
@@ -45,9 +45,9 @@ export default {
   },
   data () {
     return {
-      isText: true,
       time: '',
       questionTitle: '',
+      questionUrl: '',
       canVote: false,
       loading: false,
       expired: false,
@@ -156,7 +156,8 @@ export default {
     },
     async getMessage () {
       if (this.question.script === '0x00000001') {
-        this.questionTitle = this.question.metadata
+        this.questionTitle = JSON.parse(this.question.metadata).question
+        this.questionUrl = JSON.parse(this.question.metadata).file
         return
       }
 
@@ -173,8 +174,6 @@ export default {
         this.questionTitle = `${methodName} ${amount}%`
         return
       }
-
-      this.isText = false
       this.questionTitle = 'Unknown method'
     },
     getBarValues () {

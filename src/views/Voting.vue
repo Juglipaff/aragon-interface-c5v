@@ -41,15 +41,15 @@
             <div class="questionInput">
               <div class="question-title">Question</div>
               <input class="inputQuestion" v-model="question">
-              <button class="submit" :disabled="currentAccount.length===0 ||loadingCreate||!rightChainId" v-on:click="createProposal(question)">
-                <div  v-if="loadingCreate"  class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
+              <button class="submit" :disabled="currentAccount.length===0 ||loadingCreate||!rightChainId||fileUploading" v-on:click="createProposal(question)">
+                <div  v-if="loadingCreate||fileUploading"  class="lds-ellipsis"><div></div><div></div><div></div><div></div></div>
                 <span v-else>Create Proposal</span>
               </button>
               <button class="submitFile" v-on:click="$refs.file.click()"  :disabled="currentAccount.length===0 ||!rightChainId||fileUploading||loadingCreate">
                 <div v-if="fileUploading||loadingCreate" class="lds-dual-ring"></div>
                 <font-awesome-icon v-else :icon="['fas', 'file']" />
               </button>
-
+<div class="fileName">{{fileName}}</div>
               <input type="file"  @change="uploadFile" ref="file" style="display: none; position:absolute;" single>
 
             </div>
@@ -203,6 +203,7 @@ export default {
       showSettingsModal: false,
       file: null,
       fileUploading: false,
+      fileName: '',
       errors: [],
       role: null
     }
@@ -308,10 +309,12 @@ export default {
     async uploadFile (event) {
       const file = event.target.files[0]
       if (file) {
+        this.fileName = event.target.files[0].name
         this.fileUploading = true
         const fileTypes = ['pdf'] // ['jpg', 'jpeg', 'png', 'txt', 'pdf', 'mp3', 'mp4', 'webm']
         const extension = file.name.split('.').pop().toLowerCase()
         if (!fileTypes.includes(extension)) {
+          this.fileName = ''
           this.$refs.file.value = null
           this.fileUploading = false
           this.addError('The file must have .PDF extension.')
@@ -323,49 +326,58 @@ export default {
           try {
             const buffer = await Buffer.from(reader.result)
             const result = await this.ipfs.add(buffer)
-            this.file = { url: this.ipfsUrl + result[0].path, script: '0x00000006' }
-            this.createProposal('')
+            this.file = this.ipfsUrl + result[0].path
+            // this.createProposal('')
           } catch (err) {
+            this.$refs.file.value = null
+            this.fileName = ''
             this.addError("The file wasn't uploaded because of the IPFS error. Please try again later.")
           }
           this.fileUploading = false
-          this.$refs.file.value = null
         }
         return
       }
+      this.fileName = ''
       this.file = null
     },
 
     async createProposal (question) {
       try {
-        var args
-        if (this.file) {
-          args = [this.file.script, this.file.url]
-        } else if (question !== '') {
-          args = ['0x00000001', question]
-        } else {
+        if (!this.file && question === '') {
           this.addError('Please enter a proposal or upload a file.')
         }
+        const args = ['0x00000001', JSON.stringify({
+          question: question,
+          file: this.file ? this.file : ''
+        })]
+        /* if (this.file) {
+          args = [this.file.script, obj]
+        } else if (question !== '') {
+          args = ['0x00000001', obj]
+        } else {
+          this.addError('Please enter a proposal or upload a file.')
+        } */
 
-        if (args) {
-          this.loadingCreate = true
-          const iface = new ethers.utils.Interface(votingABI)
-          const encodedData = iface.encodeFunctionData('newVote', args)
-          const script = encodeCallScript([{ to: this.votingAddress, data: encodedData }])
-          const tx = await this.tokensContract.connect(this.provider.getSigner()).forward(
-            script,
-            {
-              gasPrice: '0'
-            }
-          )
-          await this.waitForTransaction(tx)
-        }
+        this.loadingCreate = true
+        const iface = new ethers.utils.Interface(votingABI)
+        const encodedData = iface.encodeFunctionData('newVote', args)
+        const script = encodeCallScript([{ to: this.votingAddress, data: encodedData }])
+        const tx = await this.tokensContract.connect(this.provider.getSigner()).forward(
+          script,
+          {
+            gasPrice: '0'
+          }
+        )
+        await this.waitForTransaction(tx)
       } catch (err) {
         this.addError("The transaction wasn't sent.")
         console.log(err)
       }
       this.question = ''
       this.loadingCreate = false
+      this.$refs.file.value = null
+      this.fileName = ''
+      this.file = null
     },
 
     async mint (to) {
@@ -540,6 +552,12 @@ export default {
 }
 </script>
 <style scoped>
+.fileName{
+  color:rgb(0, 183, 255);
+  position:absolute;
+  margin-left:30px;
+  margin-top:7px;
+}
 .closeErrors{
   transition:0.1s;
   position:absolute;
@@ -993,8 +1011,8 @@ button{
   border:1px solid rgb(228, 228, 228);
   background-color:white;
   border-radius: 8px;
-  padding-top:15px;
-  padding-bottom:30px;
+  padding-top:12px;
+  padding-bottom:33px;
   width:calc(100% - 330px);
   left:0;
 }

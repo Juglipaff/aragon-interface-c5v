@@ -124,9 +124,6 @@ export default {
       return ['addressBlue', 'holderAddress']
     }
   },
-  created () {
-    console.log(this.holder)
-  },
   methods: {
     async assignPosition (address, position) {
       if (position !== '') {
