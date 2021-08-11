@@ -9,7 +9,7 @@
         </button>
 
         <div class="roleManager" v-if="holder.role === 'Manager'">Manager</div>
-        <div :class="[holder.role === 'Admin'? 'roleAdmin':(holder.role === 'Expert'?'roleExpert':'roleMember')]" v-else v-on:click="openRoleModal=true">+ {{holder.role === 'Admin'?'Admin':holder.role === 'Expert'?'Expert':'Member'}}</div>
+        <div :class="[holder.role === 'Admin'? 'roleAdmin':(holder.role === 'Expert'?'roleExpert':'roleMember')]" v-else v-on:click="openRoleModal=true">+ {{holder.role}}</div>
 
         <button :class="[holder.name ? 'updateName' : 'addName']" v-on:click="openNameModal=true">
             <span v-if="holder.name">{{holder.name}}</span><span v-else>+ Assign Name</span>

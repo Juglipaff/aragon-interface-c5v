@@ -31,14 +31,13 @@
             <button v-else-if="currentAccount.length===0" class="connectWallet" v-on:click="connectWallet">Connect wallet</button>
             <div v-else class="wallet">{{currentAccount[0]}}</div>
             <div v-if="userName||userPosition" class="NamePosition">{{userName}}{{userPosition&&userName?' | ':''}}{{userPosition}}</div>
-
             <div class="role">{{role}}</div>
-
         </div>
+
         <div class="padding"></div>
         <div v-if="role!=='Guest'" class="createProposal">Create Proposal</div>
           <div v-if="role!=='Guest'" class="top-row">
-            <div class="questionInput">
+            <div :class="[role === 'Admin' || role === 'Manager' ? 'questionInput' : 'questionInputNoTokenInfo' ]">
               <div class="question-title">Question</div>
               <input class="inputQuestion" v-model="question">
               <button class="submit" :disabled="currentAccount.length===0 ||loadingCreate||!rightChainId||fileUploading" v-on:click="createProposal(question)">
@@ -49,11 +48,11 @@
                 <div v-if="fileUploading||loadingCreate" class="lds-dual-ring"></div>
                 <font-awesome-icon v-else :icon="['fas', 'file']" />
               </button>
-<div class="fileName">{{fileName}}</div>
+              <div class="fileName">{{fileName}}</div>
               <input type="file"  @change="uploadFile" ref="file" style="display: none; position:absolute;" single>
-
             </div>
-            <div class="tokenInfo">
+
+            <div class="tokenInfo" v-if="role==='Admin'||role==='Manager'">
               <div class="tokenInfoHeader">Token Info</div>
               <div class="infoToken">
                 Total supply<br>
@@ -66,6 +65,7 @@
                 <div class="tokenName">{{token.name}}({{token.symbol}})</div>
               </div>
             </div>
+
           </div>
           <div class="createProposal">Open Proposals - {{openProposals.length}}</div>
           <div class="wrapper">
@@ -1002,6 +1002,19 @@ button{
 .top-row{
    width:80%;
    margin-left:10%;
+}
+.questionInputNoTokenInfo{
+   -webkit-box-shadow: -1px 4px 10px -1px rgba(34, 60, 80, 0.05);
+  -moz-box-shadow: -1px 4px 10px -1px rgba(34, 60, 80, 0.05);
+  box-shadow: -1px 4px 10px -1px rgba(34, 60, 80, 0.05);
+  text-align:left;
+  border:1px solid rgb(228, 228, 228);
+  background-color:white;
+  border-radius: 8px;
+  padding-top:12px;
+  padding-bottom:33px;
+  width:100%;
+  left:0;
 }
 .questionInput{
   -webkit-box-shadow: -1px 4px 10px -1px rgba(34, 60, 80, 0.05);
